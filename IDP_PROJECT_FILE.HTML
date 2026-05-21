@@ -1,0 +1,769 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Margadarshi — Karnataka Career Catalyst</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Kannada:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', '"Helvetica Neue"', 'Inter', 'Noto Sans Kannada', 'sans-serif'],
+                    },
+                    colors: {
+                        apple: {
+                            bg: '#f5f5f7',
+                            white: '#ffffff',
+                            text: '#1d1d1f',
+                            secondary: '#86868b',
+                            border: '#d2d2d7',
+                            blue: '#0071e3',
+                            bluedark: '#0077ed',
+                            green: '#34c759',
+                        }
+                    },
+                    borderRadius: {
+                        apple: '980px',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Inter, 'Noto Sans Kannada', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .spinner {
+            border: 3px solid rgba(0, 0, 0, 0.06);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-top-color: #1d1d1f;
+            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .reveal {
+            animation: fadeSlide 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+        }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .apple-card {
+            background: rgba(255,255,255,0.82);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(0,0,0,0.06);
+        }
+        select, input, textarea {
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        .section-header-icon {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 13px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .btn-apple {
+            cursor: default;
+        }
+        .btn-apple:active {
+            transform: scale(0.97);
+        }
+        .lang-btn {
+            cursor: default;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .lang-btn:active {
+            transform: scale(0.95);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { animation: none; }
+            .spinner { animation: none; border-top-color: #1d1d1f; }
+        }
+    </style>
+</head>
+<body class="bg-apple-bg text-apple-text min-h-screen flex flex-col selection:bg-apple-blue selection:text-white antialiased">
+
+<div class="fixed top-0 left-0 right-0 z-50 apple-card border-b border-apple-border/40">
+    <div class="max-w-[680px] mx-auto px-5 md:px-8">
+        <div class="flex items-center justify-center py-2.5 border-b border-apple-border/20">
+            <div class="bg-apple-bg rounded-[980px] p-0.5 flex shadow-sm border border-apple-border/30">
+                <button data-lang="en" class="lang-btn active-lang px-4 py-1.5 text-xs font-medium rounded-[980px] transition-all duration-200">English</button>
+                <button data-lang="hi" class="lang-btn px-4 py-1.5 text-xs font-medium rounded-[980px] transition-all duration-200 text-apple-secondary hover:text-apple-text">हिन्दी</button>
+                <button data-lang="kn" class="lang-btn px-4 py-1.5 text-xs font-medium rounded-[980px] transition-all duration-200 text-apple-secondary hover:text-apple-text">ಕನ್ನಡ</button>
+            </div>
+        </div>
+        <button id="toggleSettingsBtn" class="w-full flex items-center justify-between py-3 text-sm font-medium text-apple-secondary hover:text-apple-text transition-colors focus:outline-none">
+            <span class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <span id="settingsLabel">Developer Settings</span>
+                <span id="settingsLabelKn" class="text-xs text-apple-secondary/60 font-normal hidden">(ಸಂರಚನೆ)</span>
+            </span>
+            <svg id="settingsIcon" class="w-3.5 h-3.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+        <div id="settingsPanel" class="hidden pb-5">
+            <p class="text-xs text-apple-secondary/60 mb-2.5 leading-relaxed">Select API Provider</p>
+            <div class="bg-apple-bg rounded-[980px] p-0.5 flex shadow-sm border border-apple-border/30 mb-3.5 self-start">
+                <button data-provider="groq" class="provider-btn active-provider px-4 py-1.5 text-xs font-medium rounded-[980px] transition-all duration-200">Groq</button>
+                <button data-provider="gemini" class="provider-btn px-4 py-1.5 text-xs font-medium rounded-[980px] transition-all duration-200 text-apple-secondary hover:text-apple-text">Gemini</button>
+            </div>
+            <p id="settingsDesc" class="text-xs text-apple-secondary/80 mb-3 leading-relaxed">Enter your Groq API Key. It's stored locally in your browser.</p>
+            <div class="flex flex-col sm:flex-row gap-2.5">
+                <input type="password" id="apiKeyInput" placeholder="Paste Groq API Key..." class="flex-grow px-4 py-2.5 bg-white rounded-xl text-sm border border-apple-border/60 focus:outline-none focus:border-apple-blue transition-colors text-apple-text placeholder:text-apple-secondary/40">
+                <button id="saveKeyBtn" class="bg-apple-text hover:bg-black text-white text-sm font-medium px-6 py-2.5 rounded-xl transition-all duration-200 hover:shadow-md active:scale-[0.97]">Save Key</button>
+            </div>
+            <p id="keyStatus" class="text-xs font-medium mt-2.5 hidden transition-opacity"></p>
+        </div>
+    </div>
+</div>
+
+<main class="flex-grow w-full max-w-[680px] mx-auto px-5 sm:px-8 pt-36 pb-16 md:pt-40 md:pb-20">
+
+    <header class="text-center mb-12 md:mb-14 reveal">
+        <h1 class="text-[2.5rem] md:text-[3.25rem] font-semibold tracking-tight text-apple-text leading-[1.1] mb-3">Margadarshi</h1>
+        <p id="headerSub" class="text-apple-secondary text-base md:text-lg font-normal max-w-md mx-auto leading-relaxed">
+            Empowering Rural Karnataka's Future
+            <br>
+            <span id="headerSubKn" class="text-sm md:text-base text-apple-secondary/70">(ಕರ್ನಾಟಕ ವಿದ್ಯಾರ್ಥಿಗಳ ಮಾರ್ಗದರ್ಶಿ)</span>
+        </p>
+    </header>
+
+    <div class="apple-card rounded-2xl p-6 md:p-8 mb-10 reveal shadow-sm">
+        <form id="profileForm" class="space-y-5 md:space-y-6">
+
+            <div class="space-y-1.5">
+                <label for="classGrade" class="block text-sm font-medium text-apple-text">
+                    <span id="labelClass">Current Class / Grade</span>
+                    <span class="text-apple-secondary font-normal ml-1" id="labelClassKn">(ಪ್ರಸ್ತುತ ತರಗತಿ)</span>
+                </label>
+                <select id="classGrade" required class="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors"></select>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+                <div class="space-y-1.5">
+                    <label for="marks" class="block text-sm font-medium text-apple-text">
+                        <span id="labelMarks">Academic Performance</span>
+                        <span class="text-apple-secondary font-normal ml-1" id="labelMarksKn">(ಅಂಕಗಳು)</span>
+                    </label>
+                    <input type="text" id="marks" required class="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors placeholder:text-apple-secondary/40">
+                    <p class="text-[11px] text-apple-secondary/70" id="hintMarks">Overall % from your last main exams.</p>
+                </div>
+                <div class="space-y-1.5">
+                    <label for="strongSubjects" class="block text-sm font-medium text-apple-text">
+                        <span id="labelSubjects">Strongest Subjects</span>
+                        <span class="text-apple-secondary font-normal ml-1" id="labelSubjectsOptional">(Optional)</span>
+                    </label>
+                    <input type="text" id="strongSubjects" class="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors placeholder:text-apple-secondary/40">
+                    <p class="text-[11px] text-apple-secondary/70" id="hintSubjects">What are you naturally good at?</p>
+                </div>
+            </div>
+
+            <div class="space-y-1.5">
+                <label for="coreInterest" class="block text-sm font-medium text-apple-text">
+                    <span id="labelInterest">What are you genuinely passionate about?</span>
+                    <br>
+                    <span class="text-apple-secondary font-normal text-xs" id="labelInterestKn">(ನಿಮ್ಮ ಆಸಕ್ತಿ ಏನು?)</span>
+                </label>
+                <p class="text-xs text-apple-secondary/80 mb-1 leading-relaxed" id="hintInterest">Write freely in your own words. Don't worry about sounding professional.</p>
+                <textarea id="coreInterest" rows="4" required class="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors resize-none placeholder:text-apple-secondary/40"></textarea>
+            </div>
+
+            <button type="submit" id="submitBtn" class="btn-apple w-full bg-apple-text hover:bg-black text-white font-medium text-[15px] py-3.5 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2.5 active:scale-[0.97]">
+                <span id="btnSubmit">Discover My Path</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+        </form>
+    </div>
+
+    <div id="loadingState" class="hidden flex-col items-center justify-center py-16 reveal">
+        <div class="spinner mb-6"></div>
+        <h3 class="text-lg font-semibold text-apple-text mb-1" id="loadingTitle">Analyzing your unique profile...</h3>
+        <p class="text-sm text-apple-secondary text-center max-w-xs" id="loadingDesc">Mapping the best educational and vocational opportunities in Karnataka just for you.</p>
+    </div>
+
+    <div id="errorState" class="hidden bg-red-50/80 backdrop-blur-sm border border-red-200/60 p-5 mb-8 rounded-2xl reveal shadow-sm">
+        <div class="flex items-start gap-3">
+            <svg class="h-5 w-5 text-red-400 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div>
+                <h3 class="text-sm font-semibold text-red-800" id="errorTitle">Something went wrong</h3>
+                <p class="text-sm text-red-700/80 mt-1" id="errorMessage">An error occurred.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="resultsContainer" class="hidden space-y-6 pb-6">
+
+        <div class="apple-card rounded-2xl overflow-hidden reveal shadow-sm" style="animation-delay: 0.1s;">
+            <div class="border-b border-apple-border/30 px-6 py-4 flex items-center gap-3">
+                <span class="section-header-icon bg-apple-text text-white">1</span>
+                <h2 class="text-[17px] font-semibold text-apple-text" id="section1Title">Academic Alignment</h2>
+            </div>
+            <div class="p-6 md:p-8 text-sm leading-relaxed text-apple-text/80" id="content1"></div>
+        </div>
+
+        <div class="apple-card rounded-2xl overflow-hidden reveal shadow-sm" style="animation-delay: 0.2s;">
+            <div class="border-b border-apple-border/30 px-6 py-4 flex items-center gap-3">
+                <span class="section-header-icon bg-apple-green text-white">2</span>
+                <h2 class="text-[17px] font-semibold text-apple-text" id="section2Title">Passion Bridge & Roadmap</h2>
+            </div>
+            <div class="p-6 md:p-8 text-sm leading-relaxed text-apple-text/80" id="content2"></div>
+        </div>
+
+        <div class="apple-card rounded-2xl overflow-hidden reveal shadow-sm" style="animation-delay: 0.3s;">
+            <div class="border-b border-apple-border/30 px-6 py-4 flex items-center gap-3">
+                <span class="section-header-icon text-white" style="background: linear-gradient(135deg, #0071e3, #34c759);">3</span>
+                <h2 class="text-[17px] font-semibold text-apple-text" id="section3Title">Competitive Horizons</h2>
+            </div>
+            <div class="p-6 md:p-8 text-sm leading-relaxed text-apple-text/80" id="content3"></div>
+        </div>
+    </div>
+</main>
+
+<script>
+    const LANG_KEY = 'margadarshi_lang';
+    const PROVIDER_KEY = 'margadarshi_provider';
+
+    const providerConfig = {
+        groq: {
+            storageKey: 'groq_api_key',
+            endpoint: 'https://api.groq.com/openai/v1/chat/completions',
+            model: 'llama-3.3-70b-versatile',
+            desc: 'Enter your Groq API Key. It\'s stored locally in your browser.',
+            placeholder: 'Paste Groq API Key...',
+            makePayload: (systemMessage, userMessage) => ({
+                model: 'llama-3.3-70b-versatile',
+                messages: [
+                    { role: 'system', content: systemMessage },
+                    { role: 'user', content: userMessage }
+                ],
+                temperature: 0.6,
+                max_tokens: 2500,
+            }),
+            getHeaders: (apiKey) => ({
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + apiKey,
+            }),
+            extractContent: (data) => {
+                if (!data.choices || !data.choices[0] || !data.choices[0].message) throw new Error('Received malformed or empty response from the AI.');
+                return data.choices[0].message.content;
+            },
+        },
+        gemini: {
+            storageKey: 'gemini_api_key',
+            endpoint: (apiKey) => `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+            desc: 'Enter your Google Gemini API Key. It\'s stored locally in your browser.',
+            placeholder: 'Paste Gemini API Key...',
+            makePayload: (systemMessage, userMessage) => ({
+                contents: [{
+                    role: 'user',
+                    parts: [{ text: systemMessage + '\n\n' + userMessage }]
+                }],
+                generationConfig: {
+                    temperature: 0.6,
+                    maxOutputTokens: 2500,
+                }
+            }),
+            getHeaders: () => ({
+                'Content-Type': 'application/json',
+            }),
+            extractContent: (data) => {
+                if (!data.candidates || !data.candidates[0].content || !data.candidates[0].content.parts) throw new Error('Received malformed or empty response from the AI.');
+                return data.candidates[0].content.parts[0].text;
+            },
+        },
+    };
+
+    const translations = {
+        en: {
+            settingsLabel: 'Developer Settings',
+            settingsLabelKn: '(ಸಂರಚನೆ)',
+
+            saveKey: 'Save Key',
+            headerSub: 'Empowering Rural Karnataka\'s Future',
+            headerSubKn: '(ಕರ್ನಾಟಕ ವಿದ್ಯಾರ್ಥಿಗಳ ಮಾರ್ಗದರ್ಶಿ)',
+            labelClass: 'Current Class / Grade',
+            labelClassKn: '(ಪ್ರಸ್ತುತ ತರಗತಿ)',
+            labelMarks: 'Academic Performance',
+            labelMarksKn: '(ಅಂಕಗಳು)',
+            labelSubjects: 'Strongest Subjects',
+            labelSubjectsOptional: '(Optional)',
+            labelInterest: 'What are you genuinely passionate about?',
+            labelInterestKn: '(ನಿಮ್ಮ ಆಸಕ್ತಿ ಏನು?)',
+            hintMarks: 'Overall % from your last main exams.',
+            hintSubjects: 'What are you naturally good at?',
+            hintInterest: 'Write freely in your own words. Don\'t worry about sounding professional.',
+            marksPlaceholder: 'e.g., 65%, B+, 8.5 CGPA',
+            subjectsPlaceholder: 'e.g., Kannada, Social Science',
+            interestPlaceholder: 'Tell us your story and interests...',
+            btnSubmit: 'Discover My Path',
+            loadingTitle: 'Analyzing your unique profile...',
+            loadingDesc: 'Mapping the best educational and vocational opportunities in Karnataka just for you.',
+            errorTitle: 'Something went wrong',
+            errorMsg: 'An error occurred.',
+            noKeyError: 'API Key is missing. Please enter your API Key in the Developer Settings at the top.',
+            processing: 'Processing...',
+            noContent: 'No content available.',
+            section1: 'Academic Alignment',
+            section2: 'Passion Bridge & Roadmap',
+            section3: 'Competitive Horizons',
+            keySaved: 'API Key saved locally!',
+            keyRemoved: 'API Key removed.',
+            classOptions: [
+                { value: '', label: 'Select your current education level' },
+                { value: 'Class 8', label: 'Class 8' },
+                { value: 'Class 9', label: 'Class 9' },
+                { value: 'Class 10 (SSLC)', label: 'Class 10 / SSLC' },
+                { value: 'Class 11 (1st PUC)', label: 'Class 11 / 1st PUC' },
+                { value: 'Class 12 (2nd PUC)', label: 'Class 12 / 2nd PUC' },
+                { value: 'Diploma/ITI', label: 'Diploma / ITI' },
+                { value: 'Degree 1st Year', label: 'Degree 1st Year' },
+            ],
+            aiLang: 'You MUST respond in English. Keep all section content in English only.',
+        },
+        hi: {
+            settingsLabel: 'डेवलपर सेटिंग्स',
+            settingsLabelKn: '',
+
+            saveKey: 'कुंजी सहेजें',
+            headerSub: 'ग्रामीण कर्नाटक के भविष्य को सशक्त बनाना',
+            headerSubKn: '',
+            labelClass: 'वर्तमान कक्षा / ग्रेड',
+            labelClassKn: '',
+            labelMarks: 'शैक्षणिक प्रदर्शन',
+            labelMarksKn: '',
+            labelSubjects: 'सबसे मजबूत विषय',
+            labelSubjectsOptional: '(वैकल्पिक)',
+            labelInterest: 'आप वास्तव में किस चीज़ के बारे में भावुक हैं?',
+            labelInterestKn: '',
+            hintMarks: 'आपकी पिछली मुख्य परीक्षाओं का समग्र प्रतिशत।',
+            hintSubjects: 'आप स्वाभाविक रूप से किसमें अच्छे हैं?',
+            hintInterest: 'अपने शब्दों में स्वतंत्र रूप से लिखें। पेशेवर लगने की चिंता न करें।',
+            marksPlaceholder: 'जैसे, 65%, B+, 8.5 CGPA',
+            subjectsPlaceholder: 'जैसे, हिंदी, विज्ञान',
+            interestPlaceholder: 'अपनी कहानी और रुचियाँ बताएं...',
+            btnSubmit: 'मेरा रास्ता खोजें',
+            loadingTitle: 'आपकी अनूठी प्रोफ़ाइल का विश्लेषण...',
+            loadingDesc: 'आपके लिए कर्नाटक में सर्वोत्तम शैक्षिक और व्यावसायिक अवसरों का मानचित्रण।',
+            errorTitle: 'कुछ गलत हो गया',
+            errorMsg: 'एक त्रुटि हुई।',
+            noKeyError: 'API कुंजी गुम है। कृपया ऊपर डेवलपर सेटिंग्स में अपनी API कुंजी दर्ज करें।',
+            processing: 'प्रसंस्करण...',
+            noContent: 'कोई सामग्री उपलब्ध नहीं है।',
+            section1: 'शैक्षणिक संरेखण',
+            section2: 'रुचि पुल और रोडमैप',
+            section3: 'प्रतिस्पर्धी क्षितिज',
+            keySaved: 'API कुंजी स्थानीय रूप से सहेजी गई!',
+            keyRemoved: 'API कुंजी हटा दी गई।',
+            classOptions: [
+                { value: '', label: 'अपनी वर्तमान शिक्षा स्तर चुनें' },
+                { value: 'Class 8', label: 'कक्षा 8' },
+                { value: 'Class 9', label: 'कक्षा 9' },
+                { value: 'Class 10 (SSLC)', label: 'कक्षा 10 / SSLC' },
+                { value: 'Class 11 (1st PUC)', label: 'कक्षा 11 / 1st PUC' },
+                { value: 'Class 12 (2nd PUC)', label: 'कक्षा 12 / 2nd PUC' },
+                { value: 'Diploma/ITI', label: 'डिप्लोमा / ITI' },
+                { value: 'Degree 1st Year', label: 'डिग्री प्रथम वर्ष' },
+            ],
+            aiLang: 'You MUST respond in Hindi (हिंदी). Keep section content in Hindi only.',
+        },
+        kn: {
+            settingsLabel: 'ಡೆವಲಪರ್ ಸೆಟ್ಟಿಂಗ್ಸ್',
+            settingsLabelKn: '',
+
+            saveKey: 'ಕೀ ಉಳಿಸಿ',
+            headerSub: 'ಗ್ರಾಮೀಣ ಕರ್ನಾಟಕದ ಭವಿಷ್ಯವನ್ನು ಸಶಕ್ತಗೊಳಿಸುವುದು',
+            headerSubKn: '',
+            labelClass: 'ಪ್ರಸ್ತುತ ತರಗತಿ / ಗ್ರೇಡ್',
+            labelClassKn: '',
+            labelMarks: 'ಶೈಕ್ಷಣಿಕ ಕಾರ್ಯಕ್ಷಮತೆ',
+            labelMarksKn: '',
+            labelSubjects: 'ಬಲವಾದ ವಿಷಯಗಳು',
+            labelSubjectsOptional: '(ಐಚ್ಛಿಕ)',
+            labelInterest: 'ನಿಮಗೆ ನಿಜವಾಗಿಯೂ ಯಾವುದರ ಬಗ್ಗೆ ಆಸಕ್ತಿ ಇದೆ?',
+            labelInterestKn: '',
+            hintMarks: 'ನಿಮ್ಮ ಕೊನೆಯ ಮುಖ್ಯ ಪರೀಕ್ಷೆಗಳ ಒಟ್ಟಾರೆ ಶೇಕಡಾವಾರು.',
+            hintSubjects: 'ನೀವು ಸ್ವಾಭಾವಿಕವಾಗಿ ಯಾವುದರಲ್ಲಿ ಉತ್ತಮರು?',
+            hintInterest: 'ನಿಮ್ಮ ಸ್ವಂತ ಮಾತುಗಳಲ್ಲಿ ಮುಕ್ತವಾಗಿ ಬರೆಯಿರಿ. ವೃತ್ತಿಪರವಾಗಿ ಧ್ವನಿಸುವ ಬಗ್ಗೆ ಚಿಂತಿಸಬೇಡಿ.',
+            marksPlaceholder: 'ಉದಾ: 65%, B+, 8.5 CGPA',
+            subjectsPlaceholder: 'ಉದಾ: ಕನ್ನಡ, ಸಮಾಜ ವಿಜ್ಞಾನ',
+            interestPlaceholder: 'ನಿಮ್ಮ ಕಥೆ ಮತ್ತು ಆಸಕ್ತಿಗಳನ್ನು ಹೇಳಿ...',
+            btnSubmit: 'ನನ್ನ ಮಾರ್ಗ ಕಂಡುಕೊಳ್ಳಿ',
+            loadingTitle: 'ನಿಮ್ಮ ವಿಶಿಷ್ಟ ಪ್ರೊಫೈಲ್ ವಿಶ್ಲೇಷಿಸಲಾಗುತ್ತಿದೆ...',
+            loadingDesc: 'ಕರ್ನಾಟಕದಲ್ಲಿ ನಿಮಗಾಗಿ ಅತ್ಯುತ್ತಮ ಶೈಕ್ಷಣಿಕ ಮತ್ತು ವೃತ್ತಿಪರ ಅವಕಾಶಗಳನ್ನು ನಕ್ಷೆ ಮಾಡಲಾಗುತ್ತಿದೆ.',
+            errorTitle: 'ಏನೋ ತಪ್ಪಾಗಿದೆ',
+            errorMsg: 'ದೋಷ ಸಂಭವಿಸಿದೆ.',
+            noKeyError: 'API ಕೀ ಕಾಣೆಯಾಗಿದೆ. ದಯವಿಟ್ಟು ಮೇಲಿನ ಡೆವಲಪರ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ನಿಮ್ಮ API ಕೀಯನ್ನು ನಮೂದಿಸಿ.',
+            processing: 'ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗುತ್ತಿದೆ...',
+            noContent: 'ಯಾವುದೇ ವಿಷಯ ಲಭ್ಯವಿಲ್ಲ.',
+            section1: 'ಶೈಕ್ಷಣಿಕ ಜೋಡಣೆ',
+            section2: 'ಆಸಕ್ತಿ ಸೇತುವೆ ಮತ್ತು ರಸ್ತೆ ನಕ್ಷೆ',
+            section3: 'ಸ್ಪರ್ಧಾತ್ಮಕ ಹಾರಿಜಾನ್‌ಗಳು',
+            keySaved: 'API ಕೀ ಸ್ಥಳೀಯವಾಗಿ ಉಳಿಸಲಾಗಿದೆ!',
+            keyRemoved: 'API ಕೀ ತೆಗೆದುಹಾಕಲಾಗಿದೆ.',
+            classOptions: [
+                { value: '', label: 'ನಿಮ್ಮ ಪ್ರಸ್ತುತ ಶಿಕ್ಷಣ ಮಟ್ಟ ಆಯ್ಕೆಮಾಡಿ' },
+                { value: 'Class 8', label: 'ಕಕ್ಷೆ 8' },
+                { value: 'Class 9', label: 'ಕಕ್ಷೆ 9' },
+                { value: 'Class 10 (SSLC)', label: 'ಕಕ್ಷೆ 10 / SSLC' },
+                { value: 'Class 11 (1st PUC)', label: 'ಕಕ್ಷೆ 11 / 1st PUC' },
+                { value: 'Class 12 (2nd PUC)', label: 'ಕಕ್ಷೆ 12 / 2nd PUC' },
+                { value: 'Diploma/ITI', label: 'ಡಿಪ್ಲೊಮಾ / ITI' },
+                { value: 'Degree 1st Year', label: 'ಪದವಿ 1ನೇ ವರ್ಷ' },
+            ],
+            aiLang: 'You MUST respond in Kannada (ಕನ್ನಡ). Keep section content in Kannada only.',
+        }
+    };
+
+    let currentLang = localStorage.getItem(LANG_KEY) || 'en';
+    let currentProvider = localStorage.getItem(PROVIDER_KEY) || 'groq';
+
+    function setProvider(provider) {
+        currentProvider = provider;
+        localStorage.setItem(PROVIDER_KEY, provider);
+        const conf = providerConfig[provider];
+        document.getElementById('settingsDesc').textContent = conf.desc;
+        document.getElementById('apiKeyInput').placeholder = conf.placeholder;
+        document.querySelectorAll('.provider-btn').forEach(btn => {
+            const bp = btn.dataset.provider;
+            if (bp === provider) {
+                btn.classList.add('bg-white', 'text-apple-text', 'shadow-sm');
+                btn.classList.remove('text-apple-secondary', 'hover:text-apple-text');
+            } else {
+                btn.classList.remove('bg-white', 'text-apple-text', 'shadow-sm');
+                btn.classList.add('text-apple-secondary', 'hover:text-apple-text');
+            }
+        });
+    }
+
+    document.querySelectorAll('.provider-btn').forEach(btn => {
+        btn.addEventListener('click', () => setProvider(btn.dataset.provider));
+    });
+
+    function capitalize(str) {
+        if (!str) return '';
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function populateClassOptions(lang) {
+        const sel = document.getElementById('classGrade');
+        const t = translations[lang];
+        sel.innerHTML = '';
+        t.classOptions.forEach(opt => {
+            const el = document.createElement('option');
+            el.value = opt.value;
+            el.textContent = opt.label;
+            if (!opt.value) el.disabled = true;
+            sel.appendChild(el);
+        });
+    }
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem(LANG_KEY, lang);
+
+        const t = translations[lang];
+
+        document.getElementById('settingsLabel').textContent = t.settingsLabel;
+        const knEl = document.getElementById('settingsLabelKn');
+        if (t.settingsLabelKn) {
+            knEl.textContent = t.settingsLabelKn;
+            knEl.classList.remove('hidden');
+        } else {
+            knEl.classList.add('hidden');
+        }
+        document.getElementById('saveKeyBtn').textContent = t.saveKey;
+
+        document.getElementById('headerSub').innerHTML = t.headerSub + '<br><span id="headerSubKn" class="text-sm md:text-base text-apple-secondary/70">' + (t.headerSubKn || '') + '</span>';
+
+        document.getElementById('labelClass').textContent = t.labelClass;
+        const lck = document.getElementById('labelClassKn');
+        if (t.labelClassKn) { lck.textContent = t.labelClassKn; lck.classList.remove('hidden'); }
+        else { lck.classList.add('hidden'); }
+
+        document.getElementById('labelMarks').textContent = t.labelMarks;
+        const lmk = document.getElementById('labelMarksKn');
+        if (t.labelMarksKn) { lmk.textContent = t.labelMarksKn; lmk.classList.remove('hidden'); }
+        else { lmk.classList.add('hidden'); }
+
+        document.getElementById('labelSubjects').textContent = t.labelSubjects;
+        document.getElementById('labelSubjectsOptional').textContent = t.labelSubjectsOptional;
+
+        document.getElementById('labelInterest').textContent = t.labelInterest;
+        const lik = document.getElementById('labelInterestKn');
+        if (t.labelInterestKn) { lik.textContent = t.labelInterestKn; lik.classList.remove('hidden'); }
+        else { lik.classList.add('hidden'); }
+
+        document.getElementById('marks').placeholder = t.marksPlaceholder;
+        document.getElementById('strongSubjects').placeholder = t.subjectsPlaceholder;
+        document.getElementById('coreInterest').placeholder = t.interestPlaceholder;
+
+        document.getElementById('hintMarks').textContent = t.hintMarks;
+        document.getElementById('hintSubjects').textContent = t.hintSubjects;
+        document.getElementById('hintInterest').textContent = t.hintInterest;
+
+        document.querySelector('#btnSubmit').textContent = t.btnSubmit;
+        document.getElementById('loadingTitle').textContent = t.loadingTitle;
+        document.getElementById('loadingDesc').textContent = t.loadingDesc;
+        document.getElementById('errorTitle').textContent = t.errorTitle;
+
+        document.getElementById('section1Title').textContent = t.section1;
+        document.getElementById('section2Title').textContent = t.section2;
+        document.getElementById('section3Title').textContent = t.section3;
+
+        populateClassOptions(lang);
+
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            const bl = btn.dataset.lang;
+            if (bl === lang) {
+                btn.classList.add('bg-white', 'text-apple-text', 'shadow-sm');
+                btn.classList.remove('text-apple-secondary', 'hover:text-apple-text');
+            } else {
+                btn.classList.remove('bg-white', 'text-apple-text', 'shadow-sm');
+                btn.classList.add('text-apple-secondary', 'hover:text-apple-text');
+            }
+        });
+
+        document.documentElement.lang = lang === 'kn' ? 'kn' : lang === 'hi' ? 'hi' : 'en';
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+    });
+
+    const toggleSettingsBtn = document.getElementById('toggleSettingsBtn');
+    const settingsPanel = document.getElementById('settingsPanel');
+    const settingsIcon = document.getElementById('settingsIcon');
+    const apiKeyInput = document.getElementById('apiKeyInput');
+    const saveKeyBtn = document.getElementById('saveKeyBtn');
+    const keyStatus = document.getElementById('keyStatus');
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setLanguage(currentLang);
+        setProvider(currentProvider);
+        const conf = providerConfig[currentProvider];
+        const storedKey = localStorage.getItem(conf.storageKey);
+        if (storedKey) {
+            apiKeyInput.value = storedKey;
+        } else {
+            settingsPanel.classList.remove('hidden');
+            settingsIcon.style.transform = 'rotate(180deg)';
+        }
+    });
+
+    toggleSettingsBtn.addEventListener('click', () => {
+        settingsPanel.classList.toggle('hidden');
+        settingsIcon.style.transform = settingsPanel.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+    });
+
+    saveKeyBtn.addEventListener('click', () => {
+        const key = apiKeyInput.value.trim();
+        const t = translations[currentLang];
+        const sk = providerConfig[currentProvider].storageKey;
+        if (key) {
+            localStorage.setItem(sk, key);
+            keyStatus.textContent = t.keySaved;
+            keyStatus.className = 'text-xs font-medium mt-2.5 text-apple-green transition-opacity';
+            setTimeout(() => {
+                settingsPanel.classList.add('hidden');
+                settingsIcon.style.transform = 'rotate(0deg)';
+                keyStatus.classList.add('hidden');
+            }, 1500);
+        } else {
+            localStorage.removeItem(sk);
+            keyStatus.textContent = t.keyRemoved;
+            keyStatus.className = 'text-xs font-medium mt-2.5 text-red-400 transition-opacity';
+        }
+        keyStatus.classList.remove('hidden');
+    });
+
+    function parseMarkdown(md) {
+        if (!md) return "<p class='italic text-apple-secondary/60'>" + translations[currentLang].noContent + "</p>";
+
+        let text = md.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+        text = text.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-apple-text">$1</strong>');
+        text = text.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
+
+        let lines = text.split('\n');
+        let html = '';
+        let inList = false;
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i].trim();
+
+            if (line === '') {
+                if (inList) { html += '</ul>\n'; inList = false; }
+                continue;
+            }
+
+            if (line.startsWith('### ')) {
+                if (inList) { html += '</ul>\n'; inList = false; }
+                html += '<h3 class="text-[15px] font-semibold mt-5 mb-2 text-apple-text">' + line.substring(4) + '</h3>\n';
+                continue;
+            }
+            if (line.startsWith('## ')) {
+                if (inList) { html += '</ul>\n'; inList = false; }
+                html += '<h3 class="text-[17px] font-semibold mt-6 mb-3 text-apple-text">' + line.substring(3) + '</h3>\n';
+                continue;
+            }
+            if (line.startsWith('# ')) {
+                if (inList) { html += '</ul>\n'; inList = false; }
+                html += '<h2 class="text-xl font-semibold mt-8 mb-4 text-apple-text">' + line.substring(2) + '</h2>\n';
+                continue;
+            }
+
+            if (line.startsWith('* ') || line.startsWith('- ')) {
+                if (!inList) {
+                    html += '<ul class="list-disc pl-5 mb-4 space-y-1.5 text-apple-text/80 marker:text-apple-blue">\n';
+                    inList = true;
+                }
+                html += '<li class="leading-relaxed">' + line.substring(2) + '</li>\n';
+                continue;
+            }
+
+            if (/^\d+\.\s/.test(line)) {
+                if (inList) { html += '</ul>\n'; inList = false; }
+                let rest = line.substring(line.indexOf('.') + 1).trim();
+                html += '<div class="flex items-start mb-2.5"><span class="font-semibold text-apple-blue mr-2.5 shrink-0">' + line.match(/^\d+/)[0] + '.</span><p class="text-apple-text/80 leading-relaxed flex-1">' + rest + '</p></div>\n';
+                continue;
+            }
+
+            if (inList) { html += '</ul>\n'; inList = false; }
+            html += '<p class="mb-3.5 text-apple-text/80 leading-relaxed">' + line + '</p>\n';
+        }
+        if (inList) { html += '</ul>\n'; }
+        return html;
+    }
+
+    const profileForm = document.getElementById('profileForm');
+    const loadingState = document.getElementById('loadingState');
+    const errorState = document.getElementById('errorState');
+    const errorMessage = document.getElementById('errorMessage');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const submitBtn = document.getElementById('submitBtn');
+
+    profileForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const t = translations[currentLang];
+
+        const apiKey = localStorage.getItem(providerConfig[currentProvider].storageKey);
+        if (!apiKey) {
+            showError(t.noKeyError);
+            settingsPanel.classList.remove('hidden');
+            settingsIcon.style.transform = 'rotate(180deg)';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            apiKeyInput.focus();
+            return;
+        }
+
+        const classGrade = document.getElementById('classGrade').value;
+        const marks = document.getElementById('marks').value;
+        const strongSubjects = document.getElementById('strongSubjects').value || "None specified";
+        const coreInterest = document.getElementById('coreInterest').value;
+
+        errorState.classList.add('hidden');
+        resultsContainer.classList.add('hidden');
+        document.getElementById('content1').innerHTML = "";
+        document.getElementById('content2').innerHTML = "";
+        document.getElementById('content3').innerHTML = "";
+
+        loadingState.classList.remove('hidden');
+        loadingState.classList.add('flex');
+
+        const btnHTML = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-60', 'cursor-not-allowed');
+        submitBtn.querySelector('#btnSubmit').textContent = t.processing;
+
+        try {
+            await getAIRecommendations(apiKey, classGrade, marks, strongSubjects, coreInterest, currentLang);
+        } catch (error) {
+            showError(error.message || t.errorMsg);
+            console.error(error);
+        } finally {
+            loadingState.classList.add('hidden');
+            loadingState.classList.remove('flex');
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+            submitBtn.querySelector('#btnSubmit').textContent = t.btnSubmit;
+        }
+    });
+
+    function showError(msg) {
+        errorMessage.textContent = msg;
+        errorState.classList.remove('hidden');
+    }
+
+    async function getAIRecommendations(apiKey, classGrade, marks, strongSubjects, coreInterest, lang) {
+        const t = translations[lang];
+        const conf = providerConfig[currentProvider];
+
+        const systemMessage = `You are an empathetic, deeply knowledgeable career counselor stationed in rural Karnataka, India.
+You understand the ground realities of rural school and college students, budget constraints, internet access issues, and state-specific educational frameworks.
+${t.aiLang}`;
+
+        const userMessage = `Student Profile:
+- Class/Grade: ${classGrade}
+- Academic Performance / Marks: ${marks}
+- Strongest Subjects: ${strongSubjects}
+- Actual Core Interest (in their own words): "${coreInterest}"
+Analyze this profile and provide a highly localized, actionable response formatted strictly into three distinct sections separated exactly by "|||". 
+Do NOT include any introduction, conversational filler, or greeting. Do NOT write the section titles (e.g. "Section 1: Academic Alignment") inside your content, as the UI already provides them. Just provide the direct markdown content for each.
+First part (Academic Alignment):
+Analyze their current class and marks to suggest realistic, immediate next steps in Karnataka's ecosystem (e.g., PUC streams, local GTTC, ITIs, polytechnics, degrees). Highlight relevant Karnataka state welfare, reservations, or scholarships (Vidyasiri, SSP) if applicable.
+|||
+Second part (Passion Bridge & Roadmap):
+If the student's marks are low but their interest demands high academics, or if they have an unconventional interest, provide an encouraging, realistic "alternative bridge". Give a step-by-step roadmap showing how to break into their field using practical skills, open-source learning, vocational certificates, or alternative entries, bypassing rigid gatekeeping. Be highly practical.
+|||
+Third part (Competitive Horizons):
+Provide a dedicated list of competitive exams, talent hunt exams, and Olympiads tailored strictly to their current grade and interests to build early exposure. Include relevant state/national opportunities like NMMS, NTSE, SOF, Homi Bhabha, KCET, DCET, or regional skill competitions.`;
+
+        const payload = conf.makePayload(systemMessage, userMessage);
+        const url = typeof conf.endpoint === 'function' ? conf.endpoint(apiKey) : conf.endpoint;
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: conf.getHeaders(apiKey),
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(`API Error ${response.status}: ${errData.error?.message || response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        const aiResponseText = conf.extractContent(data);
+        const sections = aiResponseText.split('|||');
+
+        if (sections.length >= 3) {
+            document.getElementById('content1').innerHTML = parseMarkdown(sections[0]);
+            document.getElementById('content2').innerHTML = parseMarkdown(sections[1]);
+            document.getElementById('content3').innerHTML = parseMarkdown(sections[2]);
+            resultsContainer.classList.remove('hidden');
+            document.querySelectorAll('#resultsContainer > div').forEach(el => el.classList.remove('hidden'));
+        } else {
+            console.warn("AI didn't output exact delimiters. Using fallback rendering.");
+            document.getElementById('content1').innerHTML = parseMarkdown(aiResponseText);
+            resultsContainer.classList.remove('hidden');
+            const sectionDivs = document.querySelectorAll('#resultsContainer > div');
+            if (sectionDivs.length >= 3) {
+                sectionDivs[1].classList.add('hidden');
+                sectionDivs[2].classList.add('hidden');
+            }
+        }
+    }
+</script>
+</body>
+</html>
