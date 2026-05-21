@@ -237,6 +237,9 @@
                     </button>
                 </form>
             </div>
+            <button id="logoutBtn" class="btn-apple w-full bg-white hover:bg-apple-bg text-apple-secondary hover:text-red-500 font-medium text-[13px] py-3 px-6 rounded-xl transition-all duration-200 border border-apple-border/60 active:scale-[0.97]">
+                ← Back to Login
+            </button>
         </div>
 
         <!-- ==================== PAGE: LOADING ==================== -->
@@ -395,6 +398,7 @@
             keySaved: 'API Key saved locally!',
             keyRemoved: 'API Key removed.',
             backBtn: '← Back to Form',
+            logoutBtn: '← Back to Login',
             classOptions: [
                 { value: '', label: 'Select your current education level' },
                 { value: 'Class 8', label: 'Class 8' },
@@ -448,6 +452,7 @@
             keySaved: 'API कुंजी स्थानीय रूप से सहेजी गई!',
             keyRemoved: 'API कुंजी हटा दी गई।',
             backBtn: '← फॉर्म पर वापस जाएं',
+            logoutBtn: '← लॉगिन पर वापस जाएं',
             classOptions: [
                 { value: '', label: 'अपनी वर्तमान शिक्षा स्तर चुनें' },
                 { value: 'Class 8', label: 'कक्षा 8' },
@@ -501,6 +506,7 @@
             keySaved: 'API ಕೀ ಸ್ಥಳೀಯವಾಗಿ ಉಳಿಸಲಾಗಿದೆ!',
             keyRemoved: 'API ಕೀ ತೆಗೆದುಹಾಕಲಾಗಿದೆ.',
             backBtn: '← ಫಾರ್ಮ್‌ಗೆ ಹಿಂತಿರುಗಿ',
+            logoutBtn: '← ಲಾಗಿನ್‌ಗೆ ಹಿಂತಿರುಗಿ',
             classOptions: [
                 { value: '', label: 'ನಿಮ್ಮ ಪ್ರಸ್ತುತ ಶಿಕ್ಷಣ ಮಟ್ಟ ಆಯ್ಕೆಮಾಡಿ' },
                 { value: 'Class 8', label: 'ಕಕ್ಷೆ 8' },
@@ -529,6 +535,11 @@
     // ===================== AUTH =====================
     function isLoggedIn() {
         return localStorage.getItem(AUTH_KEY) === 'true';
+    }
+
+    function logout() {
+        localStorage.removeItem(AUTH_KEY);
+        showLogin();
     }
 
     function showLogin() {
@@ -666,6 +677,7 @@
         document.getElementById('section2Title').textContent = t.section2;
         document.getElementById('section3Title').textContent = t.section3;
         document.getElementById('backToFormBtn').textContent = t.backBtn;
+        document.getElementById('logoutBtn').textContent = t.logoutBtn;
 
         populateClassOptions(lang);
 
@@ -877,6 +889,8 @@
     document.getElementById('backToFormBtn').addEventListener('click', () => {
         showPage('Form');
     });
+
+    document.getElementById('logoutBtn').addEventListener('click', logout);
 
     // ===================== AI API CALL =====================
     async function getAIRecommendations(apiKey, classGrade, marks, strongSubjects, coreInterest, lang) {

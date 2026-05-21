@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Inter, "Noto Sans Kannada", sans-serif;
+  --color-apple-bg: #f5f5f7;
+  --color-apple-white: #ffffff;
+  --color-apple-text: #1d1d1f;
+  --color-apple-secondary: #86868b;
+  --color-apple-border: #d2d2d7;
+  --color-apple-blue: #0071e3;
+  --color-apple-bluedark: #0077ed;
+  --color-apple-green: #34c759;
+  --radius-apple: 980px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Inter, "Noto Sans Kannada", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.spinner {
+  border: 3px solid rgba(0, 0, 0, 0.06);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-top-color: #1d1d1f;
+  animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.reveal {
+  animation: fadeSlide 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal-fast {
+  animation: fadeSlide 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.apple-card {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 0.5px solid rgba(0, 0, 0, 0.06);
+}
+
+select, input, textarea {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.section-header-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.step-fade {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.page-enter {
+  animation: pageIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-card {
+  animation: loginIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes loginIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { animation: none; }
+  .reveal-fast { animation: none; }
+  .spinner { animation: none; border-top-color: #1d1d1f; }
+  .page-enter { animation: none; }
+  .login-card { animation: none; }
+  .step-fade { transition: none; }
+}
