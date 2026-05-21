@@ -39,17 +39,17 @@ export default function TopBar({ lang, t, provider, onLangChange, onProviderChan
       <div className="max-w-[680px] mx-auto px-5 md:px-8">
         <div className="flex items-center justify-center py-2.5 border-b border-apple-border/20">
           <div className="bg-apple-bg rounded-[980px] p-0.5 flex shadow-sm border border-apple-border/30">
-            {(['en', 'hi', 'kn'] as Lang[]).map((l) => (
+            {(['en', 'hi', 'kn', 'ml', 'ta', 'kok', 'te'] as Lang[]).map((l) => (
               <button
                 key={l}
                 onClick={() => onLangChange(l)}
-                className={`px-4 py-1.5 text-xs font-medium rounded-[980px] transition-all duration-200 cursor-pointer ${
+                className={`px-3 py-1.5 text-xs font-medium rounded-[980px] transition-all duration-200 cursor-pointer ${
                   lang === l
                     ? 'bg-white text-apple-text shadow-sm'
                     : 'text-apple-secondary hover:text-apple-text'
                 }`}
               >
-                {l === 'en' ? 'English' : l === 'hi' ? 'हिन्दी' : 'ಕನ್ನಡ'}
+                {l === 'en' ? 'EN' : l === 'hi' ? 'HI' : l === 'kn' ? 'KN' : l === 'ml' ? 'ML' : l === 'ta' ? 'TA' : l === 'kok' ? 'KOK' : 'TE'}
               </button>
             ))}
           </div>
