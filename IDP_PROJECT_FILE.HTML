@@ -36,7 +36,10 @@
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Inter, 'Noto Sans Kannada', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
+        body.loaded { opacity: 1; }
         .spinner {
             border: 3px solid rgba(0, 0, 0, 0.06);
             width: 36px;
@@ -52,6 +55,9 @@
         @keyframes fadeSlide {
             from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        .reveal-fast {
+            animation: fadeSlide 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
         }
         .apple-card {
             background: rgba(255,255,255,0.82);
@@ -80,165 +86,235 @@
         .btn-apple:active {
             transform: scale(0.97);
         }
-        .lang-btn {
+        .lang-btn, .provider-btn {
             cursor: default;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .lang-btn:active {
+        .lang-btn:active, .provider-btn:active {
             transform: scale(0.95);
+        }
+        .page {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .page-enter {
+            animation: pageIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) both;
+        }
+        @keyframes pageIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .step-fade {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .login-card {
+            animation: loginIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+        }
+        @keyframes loginIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         @media (prefers-reduced-motion: reduce) {
             .reveal { animation: none; }
+            .reveal-fast { animation: none; }
             .spinner { animation: none; border-top-color: #1d1d1f; }
+            .page-enter { animation: none; }
+            .login-card { animation: none; }
+            .step-fade { transition: none; }
         }
     </style>
 </head>
 <body class="bg-apple-bg text-apple-text min-h-screen flex flex-col selection:bg-apple-blue selection:text-white antialiased">
 
-<div class="fixed top-0 left-0 right-0 z-50 apple-card border-b border-apple-border/40">
-    <div class="max-w-[680px] mx-auto px-5 md:px-8">
-        <div class="flex items-center justify-center py-2.5 border-b border-apple-border/20">
-            <div class="bg-apple-bg rounded-[980px] p-0.5 flex shadow-sm border border-apple-border/30">
-                <button data-lang="en" class="lang-btn active-lang px-4 py-1.5 text-xs font-medium rounded-[980px] transition-all duration-200">English</button>
-                <button data-lang="hi" class="lang-btn px-4 py-1.5 text-xs font-medium rounded-[980px] transition-all duration-200 text-apple-secondary hover:text-apple-text">हिन्दी</button>
-                <button data-lang="kn" class="lang-btn px-4 py-1.5 text-xs font-medium rounded-[980px] transition-all duration-200 text-apple-secondary hover:text-apple-text">ಕನ್ನಡ</button>
-            </div>
+<!-- ==================== LOGIN PAGE ==================== -->
+<div id="loginPage" class="min-h-screen flex items-center justify-center bg-apple-bg px-5">
+    <div class="apple-card rounded-2xl w-full max-w-sm p-8 shadow-sm login-card">
+        <div class="text-center mb-7">
+            <h1 class="text-[1.75rem] font-semibold tracking-tight text-apple-text leading-tight">Margadarshi</h1>
+            <p class="text-sm text-apple-secondary mt-1.5 leading-relaxed">AI Career Guidance for Rural Students</p>
         </div>
-        <button id="toggleSettingsBtn" class="w-full flex items-center justify-between py-3 text-sm font-medium text-apple-secondary hover:text-apple-text transition-colors focus:outline-none">
-            <span class="flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                <span id="settingsLabel">Developer Settings</span>
-                <span id="settingsLabelKn" class="text-xs text-apple-secondary/60 font-normal hidden">(ಸಂರಚನೆ)</span>
-            </span>
-            <svg id="settingsIcon" class="w-3.5 h-3.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-        </button>
-        <div id="settingsPanel" class="hidden pb-5">
-            <p class="text-xs text-apple-secondary/60 mb-2.5 leading-relaxed">Select API Provider</p>
-            <div class="bg-apple-bg rounded-[980px] p-0.5 flex shadow-sm border border-apple-border/30 mb-3.5 self-start">
-                <button data-provider="groq" class="provider-btn active-provider px-4 py-1.5 text-xs font-medium rounded-[980px] transition-all duration-200">Groq</button>
-                <button data-provider="gemini" class="provider-btn px-4 py-1.5 text-xs font-medium rounded-[980px] transition-all duration-200 text-apple-secondary hover:text-apple-text">Gemini</button>
-            </div>
-            <p id="settingsDesc" class="text-xs text-apple-secondary/80 mb-3 leading-relaxed">Enter your Groq API Key. It's stored locally in your browser.</p>
-            <div class="flex flex-col sm:flex-row gap-2.5">
-                <input type="password" id="apiKeyInput" placeholder="Paste Groq API Key..." class="flex-grow px-4 py-2.5 bg-white rounded-xl text-sm border border-apple-border/60 focus:outline-none focus:border-apple-blue transition-colors text-apple-text placeholder:text-apple-secondary/40">
-                <button id="saveKeyBtn" class="bg-apple-text hover:bg-black text-white text-sm font-medium px-6 py-2.5 rounded-xl transition-all duration-200 hover:shadow-md active:scale-[0.97]">Save Key</button>
-            </div>
-            <p id="keyStatus" class="text-xs font-medium mt-2.5 hidden transition-opacity"></p>
-        </div>
+        <form id="loginForm" class="space-y-3.5">
+            <input type="text" id="loginUser" placeholder="Username" autocomplete="username" class="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors placeholder:text-apple-secondary/40">
+            <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password" class="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors placeholder:text-apple-secondary/40">
+            <p id="loginError" class="text-xs text-red-400 hidden text-center">Invalid username or password</p>
+            <button type="submit" class="w-full bg-apple-text hover:bg-black text-white font-medium text-sm py-3 rounded-xl transition-all duration-200 active:scale-[0.97]">Sign In</button>
+        </form>
     </div>
 </div>
 
-<main class="flex-grow w-full max-w-[680px] mx-auto px-5 sm:px-8 pt-36 pb-16 md:pt-40 md:pb-20">
+<!-- ==================== APP (after login) ==================== -->
+<div id="app" class="hidden min-h-screen flex flex-col">
 
-    <header class="text-center mb-12 md:mb-14 reveal">
-        <h1 class="text-[2.5rem] md:text-[3.25rem] font-semibold tracking-tight text-apple-text leading-[1.1] mb-3">Margadarshi</h1>
-        <p id="headerSub" class="text-apple-secondary text-base md:text-lg font-normal max-w-md mx-auto leading-relaxed">
-            Empowering Rural Karnataka's Future
-            <br>
-            <span id="headerSubKn" class="text-sm md:text-base text-apple-secondary/70">(ಕರ್ನಾಟಕ ವಿದ್ಯಾರ್ಥಿಗಳ ಮಾರ್ಗದರ್ಶಿ)</span>
-        </p>
-    </header>
-
-    <div class="apple-card rounded-2xl p-6 md:p-8 mb-10 reveal shadow-sm">
-        <form id="profileForm" class="space-y-5 md:space-y-6">
-
-            <div class="space-y-1.5">
-                <label for="classGrade" class="block text-sm font-medium text-apple-text">
-                    <span id="labelClass">Current Class / Grade</span>
-                    <span class="text-apple-secondary font-normal ml-1" id="labelClassKn">(ಪ್ರಸ್ತುತ ತರಗತಿ)</span>
-                </label>
-                <select id="classGrade" required class="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors"></select>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
-                <div class="space-y-1.5">
-                    <label for="marks" class="block text-sm font-medium text-apple-text">
-                        <span id="labelMarks">Academic Performance</span>
-                        <span class="text-apple-secondary font-normal ml-1" id="labelMarksKn">(ಅಂಕಗಳು)</span>
-                    </label>
-                    <input type="text" id="marks" required class="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors placeholder:text-apple-secondary/40">
-                    <p class="text-[11px] text-apple-secondary/70" id="hintMarks">Overall % from your last main exams.</p>
-                </div>
-                <div class="space-y-1.5">
-                    <label for="strongSubjects" class="block text-sm font-medium text-apple-text">
-                        <span id="labelSubjects">Strongest Subjects</span>
-                        <span class="text-apple-secondary font-normal ml-1" id="labelSubjectsOptional">(Optional)</span>
-                    </label>
-                    <input type="text" id="strongSubjects" class="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors placeholder:text-apple-secondary/40">
-                    <p class="text-[11px] text-apple-secondary/70" id="hintSubjects">What are you naturally good at?</p>
+    <!-- Fixed Top Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 apple-card border-b border-apple-border/40">
+        <div class="max-w-[680px] mx-auto px-5 md:px-8">
+            <div class="flex items-center justify-center py-2.5 border-b border-apple-border/20">
+                <div class="bg-apple-bg rounded-[980px] p-0.5 flex shadow-sm border border-apple-border/30">
+                    <button data-lang="en" class="lang-btn active-lang px-4 py-1.5 text-xs font-medium rounded-[980px] transition-all duration-200">English</button>
+                    <button data-lang="hi" class="lang-btn px-4 py-1.5 text-xs font-medium rounded-[980px] transition-all duration-200 text-apple-secondary hover:text-apple-text">हिन्दी</button>
+                    <button data-lang="kn" class="lang-btn px-4 py-1.5 text-xs font-medium rounded-[980px] transition-all duration-200 text-apple-secondary hover:text-apple-text">ಕನ್ನಡ</button>
                 </div>
             </div>
-
-            <div class="space-y-1.5">
-                <label for="coreInterest" class="block text-sm font-medium text-apple-text">
-                    <span id="labelInterest">What are you genuinely passionate about?</span>
-                    <br>
-                    <span class="text-apple-secondary font-normal text-xs" id="labelInterestKn">(ನಿಮ್ಮ ಆಸಕ್ತಿ ಏನು?)</span>
-                </label>
-                <p class="text-xs text-apple-secondary/80 mb-1 leading-relaxed" id="hintInterest">Write freely in your own words. Don't worry about sounding professional.</p>
-                <textarea id="coreInterest" rows="4" required class="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors resize-none placeholder:text-apple-secondary/40"></textarea>
-            </div>
-
-            <button type="submit" id="submitBtn" class="btn-apple w-full bg-apple-text hover:bg-black text-white font-medium text-[15px] py-3.5 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2.5 active:scale-[0.97]">
-                <span id="btnSubmit">Discover My Path</span>
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            <button id="toggleSettingsBtn" class="w-full flex items-center justify-between py-3 text-sm font-medium text-apple-secondary hover:text-apple-text transition-colors focus:outline-none">
+                <span class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <span id="settingsLabel">Developer Settings</span>
+                    <span id="settingsLabelKn" class="text-xs text-apple-secondary/60 font-normal hidden">(ಸಂರಚನೆ)</span>
+                </span>
+                <svg id="settingsIcon" class="w-3.5 h-3.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
-        </form>
-    </div>
-
-    <div id="loadingState" class="hidden flex-col items-center justify-center py-16 reveal">
-        <div class="spinner mb-6"></div>
-        <h3 class="text-lg font-semibold text-apple-text mb-1" id="loadingTitle">Analyzing your unique profile...</h3>
-        <p class="text-sm text-apple-secondary text-center max-w-xs" id="loadingDesc">Mapping the best educational and vocational opportunities in Karnataka just for you.</p>
-    </div>
-
-    <div id="errorState" class="hidden bg-red-50/80 backdrop-blur-sm border border-red-200/60 p-5 mb-8 rounded-2xl reveal shadow-sm">
-        <div class="flex items-start gap-3">
-            <svg class="h-5 w-5 text-red-400 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <div>
-                <h3 class="text-sm font-semibold text-red-800" id="errorTitle">Something went wrong</h3>
-                <p class="text-sm text-red-700/80 mt-1" id="errorMessage">An error occurred.</p>
+            <div id="settingsPanel" class="hidden pb-5">
+                <p class="text-xs text-apple-secondary/60 mb-2.5 leading-relaxed">Select API Provider</p>
+                <div class="bg-apple-bg rounded-[980px] p-0.5 flex shadow-sm border border-apple-border/30 mb-3.5 self-start">
+                    <button data-provider="groq" class="provider-btn active-provider px-4 py-1.5 text-xs font-medium rounded-[980px] transition-all duration-200">Groq</button>
+                    <button data-provider="gemini" class="provider-btn px-4 py-1.5 text-xs font-medium rounded-[980px] transition-all duration-200 text-apple-secondary hover:text-apple-text">Gemini</button>
+                </div>
+                <p id="settingsDesc" class="text-xs text-apple-secondary/80 mb-3 leading-relaxed"></p>
+                <div class="flex flex-col sm:flex-row gap-2.5">
+                    <input type="password" id="apiKeyInput" class="flex-grow px-4 py-2.5 bg-white rounded-xl text-sm border border-apple-border/60 focus:outline-none focus:border-apple-blue transition-colors text-apple-text placeholder:text-apple-secondary/40">
+                    <button id="saveKeyBtn" class="bg-apple-text hover:bg-black text-white text-sm font-medium px-6 py-2.5 rounded-xl transition-all duration-200 hover:shadow-md active:scale-[0.97]">Save Key</button>
+                </div>
+                <p id="keyStatus" class="text-xs font-medium mt-2.5 hidden transition-opacity"></p>
             </div>
         </div>
     </div>
 
-    <div id="resultsContainer" class="hidden space-y-6 pb-6">
+    <main class="flex-grow w-full max-w-[680px] mx-auto px-5 sm:px-8 pt-36 pb-16 md:pt-40 md:pb-20">
 
-        <div class="apple-card rounded-2xl overflow-hidden reveal shadow-sm" style="animation-delay: 0.1s;">
-            <div class="border-b border-apple-border/30 px-6 py-4 flex items-center gap-3">
-                <span class="section-header-icon bg-apple-text text-white">1</span>
-                <h2 class="text-[17px] font-semibold text-apple-text" id="section1Title">Academic Alignment</h2>
+        <!-- ==================== PAGE: FORM ==================== -->
+        <div id="pageForm" class="page">
+            <header class="text-center mb-12 md:mb-14 reveal">
+                <h1 class="text-[2.5rem] md:text-[3.25rem] font-semibold tracking-tight text-apple-text leading-[1.1] mb-3">Margadarshi</h1>
+                <p id="headerSub" class="text-apple-secondary text-base md:text-lg font-normal max-w-md mx-auto leading-relaxed">
+                    Empowering Rural Karnataka's Future
+                    <br>
+                    <span id="headerSubKn" class="text-sm md:text-base text-apple-secondary/70">(ಕರ್ನಾಟಕ ವಿದ್ಯಾರ್ಥಿಗಳ ಮಾರ್ಗದರ್ಶಿ)</span>
+                </p>
+            </header>
+
+            <div class="apple-card rounded-2xl p-6 md:p-8 mb-10 reveal shadow-sm">
+                <form id="profileForm" class="space-y-5 md:space-y-6">
+
+                    <div class="space-y-1.5">
+                        <label for="classGrade" class="block text-sm font-medium text-apple-text">
+                            <span id="labelClass">Current Class / Grade</span>
+                            <span class="text-apple-secondary font-normal ml-1" id="labelClassKn">(ಪ್ರಸ್ತುತ ತರಗತಿ)</span>
+                        </label>
+                        <select id="classGrade" required class="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors"></select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+                        <div class="space-y-1.5">
+                            <label for="marks" class="block text-sm font-medium text-apple-text">
+                                <span id="labelMarks">Academic Performance</span>
+                                <span class="text-apple-secondary font-normal ml-1" id="labelMarksKn">(ಅಂಕಗಳು)</span>
+                            </label>
+                            <input type="text" id="marks" required class="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors placeholder:text-apple-secondary/40">
+                            <p class="text-[11px] text-apple-secondary/70" id="hintMarks">Overall % from your last main exams.</p>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label for="strongSubjects" class="block text-sm font-medium text-apple-text">
+                                <span id="labelSubjects">Strongest Subjects</span>
+                                <span class="text-apple-secondary font-normal ml-1" id="labelSubjectsOptional">(Optional)</span>
+                            </label>
+                            <input type="text" id="strongSubjects" class="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors placeholder:text-apple-secondary/40">
+                            <p class="text-[11px] text-apple-secondary/70" id="hintSubjects">What are you naturally good at?</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label for="coreInterest" class="block text-sm font-medium text-apple-text">
+                            <span id="labelInterest">What are you genuinely passionate about?</span>
+                            <br>
+                            <span class="text-apple-secondary font-normal text-xs" id="labelInterestKn">(ನಿಮ್ಮ ಆಸಕ್ತಿ ಏನು?)</span>
+                        </label>
+                        <p class="text-xs text-apple-secondary/80 mb-1 leading-relaxed" id="hintInterest">Write freely in your own words. Don't worry about sounding professional.</p>
+                        <textarea id="coreInterest" rows="4" required class="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors resize-none placeholder:text-apple-secondary/40"></textarea>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn-apple w-full bg-apple-text hover:bg-black text-white font-medium text-[15px] py-3.5 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2.5 active:scale-[0.97]">
+                        <span id="btnSubmit">Discover My Path</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
+                </form>
             </div>
-            <div class="p-6 md:p-8 text-sm leading-relaxed text-apple-text/80" id="content1"></div>
         </div>
 
-        <div class="apple-card rounded-2xl overflow-hidden reveal shadow-sm" style="animation-delay: 0.2s;">
-            <div class="border-b border-apple-border/30 px-6 py-4 flex items-center gap-3">
-                <span class="section-header-icon bg-apple-green text-white">2</span>
-                <h2 class="text-[17px] font-semibold text-apple-text" id="section2Title">Passion Bridge & Roadmap</h2>
+        <!-- ==================== PAGE: LOADING ==================== -->
+        <div id="pageLoading" class="hidden page">
+            <div class="flex flex-col items-center justify-center py-20 page-enter">
+                <div class="spinner mb-8"></div>
+                <div class="h-7 flex items-center justify-center mb-4">
+                    <p id="loadingStep" class="text-base md:text-lg font-medium text-apple-text step-fade">Analyzing academic strengths...</p>
+                </div>
+                <div class="w-48 md:w-56 h-1 bg-apple-border/40 rounded-full overflow-hidden">
+                    <div id="progressBar" class="h-full bg-apple-text rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                </div>
+                <p class="text-xs text-apple-secondary/70 mt-6">Please wait while we analyze your profile</p>
             </div>
-            <div class="p-6 md:p-8 text-sm leading-relaxed text-apple-text/80" id="content2"></div>
         </div>
 
-        <div class="apple-card rounded-2xl overflow-hidden reveal shadow-sm" style="animation-delay: 0.3s;">
-            <div class="border-b border-apple-border/30 px-6 py-4 flex items-center gap-3">
-                <span class="section-header-icon text-white" style="background: linear-gradient(135deg, #0071e3, #34c759);">3</span>
-                <h2 class="text-[17px] font-semibold text-apple-text" id="section3Title">Competitive Horizons</h2>
+        <!-- ==================== PAGE: RESULTS ==================== -->
+        <div id="pageResults" class="hidden page space-y-6 pb-6">
+
+            <div class="apple-card rounded-2xl overflow-hidden reveal shadow-sm" style="animation-delay: 0.1s;">
+                <div class="border-b border-apple-border/30 px-6 py-4 flex items-center gap-3">
+                    <span class="section-header-icon bg-apple-text text-white">1</span>
+                    <h2 class="text-[17px] font-semibold text-apple-text" id="section1Title">Academic Alignment</h2>
+                </div>
+                <div class="p-6 md:p-8 text-sm leading-relaxed text-apple-text/80" id="content1"></div>
             </div>
-            <div class="p-6 md:p-8 text-sm leading-relaxed text-apple-text/80" id="content3"></div>
+
+            <div class="apple-card rounded-2xl overflow-hidden reveal shadow-sm" style="animation-delay: 0.2s;">
+                <div class="border-b border-apple-border/30 px-6 py-4 flex items-center gap-3">
+                    <span class="section-header-icon bg-apple-green text-white">2</span>
+                    <h2 class="text-[17px] font-semibold text-apple-text" id="section2Title">Passion Bridge &amp; Roadmap</h2>
+                </div>
+                <div class="p-6 md:p-8 text-sm leading-relaxed text-apple-text/80" id="content2"></div>
+            </div>
+
+            <div class="apple-card rounded-2xl overflow-hidden reveal shadow-sm" style="animation-delay: 0.3s;">
+                <div class="border-b border-apple-border/30 px-6 py-4 flex items-center gap-3">
+                    <span class="section-header-icon text-white" style="background: linear-gradient(135deg, #0071e3, #34c759);">3</span>
+                    <h2 class="text-[17px] font-semibold text-apple-text" id="section3Title">Competitive Horizons</h2>
+                </div>
+                <div class="p-6 md:p-8 text-sm leading-relaxed text-apple-text/80" id="content3"></div>
+            </div>
+
+            <button id="backToFormBtn" class="btn-apple w-full bg-white hover:bg-apple-bg text-apple-text font-medium text-[13px] py-3 px-6 rounded-xl transition-all duration-200 border border-apple-border/60 active:scale-[0.97]">
+                ← Back to Form
+            </button>
         </div>
-    </div>
-</main>
+
+        <!-- Error State (shared) -->
+        <div id="errorState" class="hidden bg-red-50/80 backdrop-blur-sm border border-red-200/60 p-5 mb-8 rounded-2xl reveal shadow-sm">
+            <div class="flex items-start gap-3">
+                <svg class="h-5 w-5 text-red-400 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div>
+                    <h3 class="text-sm font-semibold text-red-800" id="errorTitle">Something went wrong</h3>
+                    <p class="text-sm text-red-700/80 mt-1" id="errorMessage">An error occurred.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State (shared) -->
+        <div id="loadingState" class="hidden flex-col items-center justify-center py-16 reveal">
+            <div class="spinner mb-6"></div>
+            <h3 class="text-lg font-semibold text-apple-text mb-1" id="loadingTitle">Analyzing your unique profile...</h3>
+            <p class="text-sm text-apple-secondary text-center max-w-xs" id="loadingDesc">Mapping the best educational and vocational opportunities in Karnataka just for you.</p>
+        </div>
+
+    </main>
+</div>
 
 <script>
     const LANG_KEY = 'margadarshi_lang';
     const PROVIDER_KEY = 'margadarshi_provider';
+    const AUTH_KEY = 'margadarshi_auth';
 
     const providerConfig = {
         groq: {
             storageKey: 'groq_api_key',
             endpoint: 'https://api.groq.com/openai/v1/chat/completions',
-            model: 'llama-3.3-70b-versatile',
             desc: 'Enter your Groq API Key. It\'s stored locally in your browser.',
             placeholder: 'Paste Groq API Key...',
             makePayload: (systemMessage, userMessage) => ({
@@ -288,7 +364,6 @@
         en: {
             settingsLabel: 'Developer Settings',
             settingsLabelKn: '(ಸಂರಚನೆ)',
-
             saveKey: 'Save Key',
             headerSub: 'Empowering Rural Karnataka\'s Future',
             headerSubKn: '(ಕರ್ನಾಟಕ ವಿದ್ಯಾರ್ಥಿಗಳ ಮಾರ್ಗದರ್ಶಿ)',
@@ -319,6 +394,7 @@
             section3: 'Competitive Horizons',
             keySaved: 'API Key saved locally!',
             keyRemoved: 'API Key removed.',
+            backBtn: '← Back to Form',
             classOptions: [
                 { value: '', label: 'Select your current education level' },
                 { value: 'Class 8', label: 'Class 8' },
@@ -330,11 +406,17 @@
                 { value: 'Degree 1st Year', label: 'Degree 1st Year' },
             ],
             aiLang: 'You MUST respond in English. Keep all section content in English only.',
+            loadingSteps: [
+                'Analyzing academic strengths...',
+                'Matching career pathways...',
+                'Finding scholarship opportunities...',
+                'Building personalized roadmap...',
+                'Generating AI insights...',
+            ],
         },
         hi: {
             settingsLabel: 'डेवलपर सेटिंग्स',
             settingsLabelKn: '',
-
             saveKey: 'कुंजी सहेजें',
             headerSub: 'ग्रामीण कर्नाटक के भविष्य को सशक्त बनाना',
             headerSubKn: '',
@@ -365,6 +447,7 @@
             section3: 'प्रतिस्पर्धी क्षितिज',
             keySaved: 'API कुंजी स्थानीय रूप से सहेजी गई!',
             keyRemoved: 'API कुंजी हटा दी गई।',
+            backBtn: '← फॉर्म पर वापस जाएं',
             classOptions: [
                 { value: '', label: 'अपनी वर्तमान शिक्षा स्तर चुनें' },
                 { value: 'Class 8', label: 'कक्षा 8' },
@@ -376,11 +459,17 @@
                 { value: 'Degree 1st Year', label: 'डिग्री प्रथम वर्ष' },
             ],
             aiLang: 'You MUST respond in Hindi (हिंदी). Keep section content in Hindi only.',
+            loadingSteps: [
+                'शैक्षणिक ताकत का विश्लेषण...',
+                'करियर पथ मिलान...',
+                'छात्रवृत्ति के अवसर ढूँढना...',
+                'व्यक्तिगत रोडमैप बनाना...',
+                'AI अंतर्दृष्टि उत्पन्न करना...',
+            ],
         },
         kn: {
             settingsLabel: 'ಡೆವಲಪರ್ ಸೆಟ್ಟಿಂಗ್ಸ್',
             settingsLabelKn: '',
-
             saveKey: 'ಕೀ ಉಳಿಸಿ',
             headerSub: 'ಗ್ರಾಮೀಣ ಕರ್ನಾಟಕದ ಭವಿಷ್ಯವನ್ನು ಸಶಕ್ತಗೊಳಿಸುವುದು',
             headerSubKn: '',
@@ -411,6 +500,7 @@
             section3: 'ಸ್ಪರ್ಧಾತ್ಮಕ ಹಾರಿಜಾನ್‌ಗಳು',
             keySaved: 'API ಕೀ ಸ್ಥಳೀಯವಾಗಿ ಉಳಿಸಲಾಗಿದೆ!',
             keyRemoved: 'API ಕೀ ತೆಗೆದುಹಾಕಲಾಗಿದೆ.',
+            backBtn: '← ಫಾರ್ಮ್‌ಗೆ ಹಿಂತಿರುಗಿ',
             classOptions: [
                 { value: '', label: 'ನಿಮ್ಮ ಪ್ರಸ್ತುತ ಶಿಕ್ಷಣ ಮಟ್ಟ ಆಯ್ಕೆಮಾಡಿ' },
                 { value: 'Class 8', label: 'ಕಕ್ಷೆ 8' },
@@ -422,12 +512,74 @@
                 { value: 'Degree 1st Year', label: 'ಪದವಿ 1ನೇ ವರ್ಷ' },
             ],
             aiLang: 'You MUST respond in Kannada (ಕನ್ನಡ). Keep section content in Kannada only.',
+            loadingSteps: [
+                'ಶೈಕ್ಷಣಿಕ ಸಾಮರ್ಥ್ಯ ವಿಶ್ಲೇಷಿಸಲಾಗುತ್ತಿದೆ...',
+                'ವೃತ್ತಿ ಮಾರ್ಗಗಳನ್ನು ಹೊಂದಿಸಲಾಗುತ್ತಿದೆ...',
+                'ವಿದ್ಯಾರ್ಥಿವೇತನ ಅವಕಾಶಗಳನ್ನು ಹುಡುಕಲಾಗುತ್ತಿದೆ...',
+                'ವೈಯಕ್ತಿಕ ರಸ್ತೆ ನಕ್ಷೆ ನಿರ್ಮಿಸಲಾಗುತ್ತಿದೆ...',
+                'AI ಒಳನೋಟಗಳನ್ನು ಉತ್ಪಾದಿಸಲಾಗುತ್ತಿದೆ...',
+            ],
         }
     };
 
     let currentLang = localStorage.getItem(LANG_KEY) || 'en';
     let currentProvider = localStorage.getItem(PROVIDER_KEY) || 'groq';
+    let loadingTimer = null;
 
+    // ===================== AUTH =====================
+    function isLoggedIn() {
+        return localStorage.getItem(AUTH_KEY) === 'true';
+    }
+
+    function showLogin() {
+        document.getElementById('loginPage').classList.remove('hidden');
+        document.getElementById('app').classList.add('hidden');
+    }
+
+    function showApp() {
+        document.getElementById('loginPage').classList.add('hidden');
+        document.getElementById('app').classList.remove('hidden');
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const user = document.getElementById('loginUser').value.trim();
+        const pass = document.getElementById('loginPass').value.trim();
+        const errorEl = document.getElementById('loginError');
+
+        if (user === 'admin' && pass === 'admin') {
+            localStorage.setItem(AUTH_KEY, 'true');
+            errorEl.classList.add('hidden');
+            showApp();
+            showPage('Form');
+        } else {
+            errorEl.classList.remove('hidden');
+            document.getElementById('loginPass').value = '';
+        }
+    });
+
+    // ===================== PAGE ROUTING =====================
+    function showPage(pageName) {
+        ['Form', 'Loading', 'Results'].forEach(name => {
+            const el = document.getElementById('page' + name);
+            if (name === pageName) {
+                el.classList.remove('hidden');
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(16px)';
+                requestAnimationFrame(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                });
+            } else {
+                el.classList.add('hidden');
+                el.style.opacity = '';
+                el.style.transform = '';
+            }
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ===================== PROVIDER =====================
     function setProvider(provider) {
         currentProvider = provider;
         localStorage.setItem(PROVIDER_KEY, provider);
@@ -450,11 +602,7 @@
         btn.addEventListener('click', () => setProvider(btn.dataset.provider));
     });
 
-    function capitalize(str) {
-        if (!str) return '';
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-
+    // ===================== LANGUAGE =====================
     function populateClassOptions(lang) {
         const sel = document.getElementById('classGrade');
         const t = translations[lang];
@@ -471,7 +619,6 @@
     function setLanguage(lang) {
         currentLang = lang;
         localStorage.setItem(LANG_KEY, lang);
-
         const t = translations[lang];
 
         document.getElementById('settingsLabel').textContent = t.settingsLabel;
@@ -485,7 +632,6 @@
         document.getElementById('saveKeyBtn').textContent = t.saveKey;
 
         document.getElementById('headerSub').innerHTML = t.headerSub + '<br><span id="headerSubKn" class="text-sm md:text-base text-apple-secondary/70">' + (t.headerSubKn || '') + '</span>';
-
         document.getElementById('labelClass').textContent = t.labelClass;
         const lck = document.getElementById('labelClassKn');
         if (t.labelClassKn) { lck.textContent = t.labelClassKn; lck.classList.remove('hidden'); }
@@ -516,10 +662,10 @@
         document.getElementById('loadingTitle').textContent = t.loadingTitle;
         document.getElementById('loadingDesc').textContent = t.loadingDesc;
         document.getElementById('errorTitle').textContent = t.errorTitle;
-
         document.getElementById('section1Title').textContent = t.section1;
         document.getElementById('section2Title').textContent = t.section2;
         document.getElementById('section3Title').textContent = t.section3;
+        document.getElementById('backToFormBtn').textContent = t.backBtn;
 
         populateClassOptions(lang);
 
@@ -541,25 +687,13 @@
         btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
     });
 
+    // ===================== SETTINGS TOGGLE =====================
     const toggleSettingsBtn = document.getElementById('toggleSettingsBtn');
     const settingsPanel = document.getElementById('settingsPanel');
     const settingsIcon = document.getElementById('settingsIcon');
     const apiKeyInput = document.getElementById('apiKeyInput');
     const saveKeyBtn = document.getElementById('saveKeyBtn');
     const keyStatus = document.getElementById('keyStatus');
-
-    document.addEventListener('DOMContentLoaded', () => {
-        setLanguage(currentLang);
-        setProvider(currentProvider);
-        const conf = providerConfig[currentProvider];
-        const storedKey = localStorage.getItem(conf.storageKey);
-        if (storedKey) {
-            apiKeyInput.value = storedKey;
-        } else {
-            settingsPanel.classList.remove('hidden');
-            settingsIcon.style.transform = 'rotate(180deg)';
-        }
-    });
 
     toggleSettingsBtn.addEventListener('click', () => {
         settingsPanel.classList.toggle('hidden');
@@ -587,25 +721,21 @@
         keyStatus.classList.remove('hidden');
     });
 
+    // ===================== MARKDOWN PARSER =====================
     function parseMarkdown(md) {
         if (!md) return "<p class='italic text-apple-secondary/60'>" + translations[currentLang].noContent + "</p>";
-
         let text = md.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
         text = text.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-apple-text">$1</strong>');
         text = text.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
-
         let lines = text.split('\n');
         let html = '';
         let inList = false;
         for (let i = 0; i < lines.length; i++) {
             let line = lines[i].trim();
-
             if (line === '') {
                 if (inList) { html += '</ul>\n'; inList = false; }
                 continue;
             }
-
             if (line.startsWith('### ')) {
                 if (inList) { html += '</ul>\n'; inList = false; }
                 html += '<h3 class="text-[15px] font-semibold mt-5 mb-2 text-apple-text">' + line.substring(4) + '</h3>\n';
@@ -621,7 +751,6 @@
                 html += '<h2 class="text-xl font-semibold mt-8 mb-4 text-apple-text">' + line.substring(2) + '</h2>\n';
                 continue;
             }
-
             if (line.startsWith('* ') || line.startsWith('- ')) {
                 if (!inList) {
                     html += '<ul class="list-disc pl-5 mb-4 space-y-1.5 text-apple-text/80 marker:text-apple-blue">\n';
@@ -630,14 +759,12 @@
                 html += '<li class="leading-relaxed">' + line.substring(2) + '</li>\n';
                 continue;
             }
-
             if (/^\d+\.\s/.test(line)) {
                 if (inList) { html += '</ul>\n'; inList = false; }
                 let rest = line.substring(line.indexOf('.') + 1).trim();
                 html += '<div class="flex items-start mb-2.5"><span class="font-semibold text-apple-blue mr-2.5 shrink-0">' + line.match(/^\d+/)[0] + '.</span><p class="text-apple-text/80 leading-relaxed flex-1">' + rest + '</p></div>\n';
                 continue;
             }
-
             if (inList) { html += '</ul>\n'; inList = false; }
             html += '<p class="mb-3.5 text-apple-text/80 leading-relaxed">' + line + '</p>\n';
         }
@@ -645,11 +772,48 @@
         return html;
     }
 
+    // ===================== LOADING ANIMATION =====================
+    function startLoadingAnimation() {
+        const t = translations[currentLang];
+        const steps = t.loadingSteps;
+        let index = 0;
+        const stepEl = document.getElementById('loadingStep');
+        const barEl = document.getElementById('progressBar');
+
+        stepEl.textContent = steps[0];
+        barEl.style.width = '0%';
+
+        const totalDuration = 5000;
+        const stepDuration = totalDuration / steps.length;
+
+        loadingTimer = setInterval(() => {
+            index++;
+            if (index < steps.length) {
+                stepEl.style.opacity = '0';
+                stepEl.style.transform = 'translateY(6px)';
+                setTimeout(() => {
+                    stepEl.textContent = steps[index];
+                    stepEl.style.opacity = '1';
+                    stepEl.style.transform = 'translateY(0)';
+                }, 200);
+                barEl.style.width = ((index + 1) / steps.length) * 100 + '%';
+            } else {
+                clearInterval(loadingTimer);
+                barEl.style.width = '100%';
+            }
+        }, stepDuration);
+    }
+
+    // ===================== ERROR HANDLING =====================
+    function showError(msg) {
+        document.getElementById('errorMessage').textContent = msg;
+        document.getElementById('errorState').classList.remove('hidden');
+    }
+
+    // ===================== FORM SUBMIT =====================
     const profileForm = document.getElementById('profileForm');
-    const loadingState = document.getElementById('loadingState');
     const errorState = document.getElementById('errorState');
     const errorMessage = document.getElementById('errorMessage');
-    const resultsContainer = document.getElementById('resultsContainer');
     const submitBtn = document.getElementById('submitBtn');
 
     profileForm.addEventListener('submit', async (e) => {
@@ -672,38 +836,49 @@
         const coreInterest = document.getElementById('coreInterest').value;
 
         errorState.classList.add('hidden');
-        resultsContainer.classList.add('hidden');
         document.getElementById('content1').innerHTML = "";
         document.getElementById('content2').innerHTML = "";
         document.getElementById('content3').innerHTML = "";
 
-        loadingState.classList.remove('hidden');
-        loadingState.classList.add('flex');
-
-        const btnHTML = submitBtn.innerHTML;
+        const btnText = submitBtn.querySelector('#btnSubmit').textContent;
         submitBtn.disabled = true;
         submitBtn.classList.add('opacity-60', 'cursor-not-allowed');
         submitBtn.querySelector('#btnSubmit').textContent = t.processing;
 
+        showPage('Loading');
+        startLoadingAnimation();
+
         try {
-            await getAIRecommendations(apiKey, classGrade, marks, strongSubjects, coreInterest, currentLang);
+            const sections = await getAIRecommendations(apiKey, classGrade, marks, strongSubjects, coreInterest, currentLang);
+
+            clearInterval(loadingTimer);
+            document.getElementById('progressBar').style.width = '100%';
+
+            document.getElementById('content1').innerHTML = parseMarkdown(sections[0]);
+            document.getElementById('content2').innerHTML = parseMarkdown(sections[1]);
+            document.getElementById('content3').innerHTML = parseMarkdown(sections[2]);
+
+            setTimeout(() => {
+                showPage('Results');
+            }, 300);
         } catch (error) {
+            clearInterval(loadingTimer);
             showError(error.message || t.errorMsg);
             console.error(error);
+            showPage('Form');
         } finally {
-            loadingState.classList.add('hidden');
-            loadingState.classList.remove('flex');
             submitBtn.disabled = false;
             submitBtn.classList.remove('opacity-60', 'cursor-not-allowed');
-            submitBtn.querySelector('#btnSubmit').textContent = t.btnSubmit;
+            submitBtn.querySelector('#btnSubmit').textContent = btnText;
         }
     });
 
-    function showError(msg) {
-        errorMessage.textContent = msg;
-        errorState.classList.remove('hidden');
-    }
+    // ===================== BACK TO FORM =====================
+    document.getElementById('backToFormBtn').addEventListener('click', () => {
+        showPage('Form');
+    });
 
+    // ===================== AI API CALL =====================
     async function getAIRecommendations(apiKey, classGrade, marks, strongSubjects, coreInterest, lang) {
         const t = translations[lang];
         const conf = providerConfig[currentProvider];
@@ -743,27 +918,39 @@ Provide a dedicated list of competitive exams, talent hunt exams, and Olympiads 
         }
 
         const data = await response.json();
-
         const aiResponseText = conf.extractContent(data);
         const sections = aiResponseText.split('|||');
 
-        if (sections.length >= 3) {
-            document.getElementById('content1').innerHTML = parseMarkdown(sections[0]);
-            document.getElementById('content2').innerHTML = parseMarkdown(sections[1]);
-            document.getElementById('content3').innerHTML = parseMarkdown(sections[2]);
-            resultsContainer.classList.remove('hidden');
-            document.querySelectorAll('#resultsContainer > div').forEach(el => el.classList.remove('hidden'));
-        } else {
+        if (sections.length < 3) {
             console.warn("AI didn't output exact delimiters. Using fallback rendering.");
-            document.getElementById('content1').innerHTML = parseMarkdown(aiResponseText);
-            resultsContainer.classList.remove('hidden');
-            const sectionDivs = document.querySelectorAll('#resultsContainer > div');
-            if (sectionDivs.length >= 3) {
-                sectionDivs[1].classList.add('hidden');
-                sectionDivs[2].classList.add('hidden');
-            }
+            return [aiResponseText, '', ''];
         }
+
+        return sections;
     }
+
+    // ===================== INIT =====================
+    document.addEventListener('DOMContentLoaded', () => {
+        document.body.classList.add('loaded');
+
+        if (isLoggedIn()) {
+            showApp();
+            showPage('Form');
+        } else {
+            showLogin();
+        }
+
+        setLanguage(currentLang);
+        setProvider(currentProvider);
+        const conf = providerConfig[currentProvider];
+        const storedKey = localStorage.getItem(conf.storageKey);
+        if (!storedKey) {
+            settingsPanel.classList.remove('hidden');
+            settingsIcon.style.transform = 'rotate(180deg)';
+        } else {
+            apiKeyInput.value = storedKey;
+        }
+    });
 </script>
 </body>
 </html>
