@@ -1,6 +1,6 @@
 import { type FormEvent, useState } from 'react'
 import { MeshGradient } from '@paper-design/shaders-react'
-import { login } from '@/stores/auth'
+import { guestLogin, emailLogin } from '@/stores/auth'
 
 const COLORS = ['#72b9bb', '#b5d9d9', '#ffd1bd', '#ffebe0', '#8cc5b8', '#dbf4a4']
 
@@ -8,16 +8,24 @@ interface LoginPageProps {
   onLogin: () => void
 }
 
+type Mode = 'choice' | 'email'
+
 export default function LoginPage({ onLogin }: LoginPageProps) {
+  const [mode, setMode] = useState<Mode>('choice')
   const [error, setError] = useState(false)
 
-  function handleSubmit(e: FormEvent) {
+  function handleGuest() {
+    guestLogin()
+    onLogin()
+  }
+
+  function handleEmailSubmit(e: FormEvent) {
     e.preventDefault()
     const form = e.target as HTMLFormElement
-    const user = (form.elements.namedItem('username') as HTMLInputElement).value.trim()
+    const email = (form.elements.namedItem('email') as HTMLInputElement).value.trim()
     const pass = (form.elements.namedItem('password') as HTMLInputElement).value.trim()
 
-    if (login(user, pass)) {
+    if (emailLogin(email, pass)) {
       setError(false)
       onLogin()
     } else {
@@ -49,36 +57,68 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
         </p>
       </div>
       <div className="relative apple-card rounded-2xl w-full max-w-sm p-8 shadow-sm login-card" style={{ zIndex: 2 }}>
-        <div className="text-center mb-7">
-          <p className="text-sm font-medium text-apple-secondary tracking-widest uppercase">
-            Login
-          </p>
-        </div>
-        <form onSubmit={handleSubmit} className="space-y-3.5">
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            autoComplete="username"
-            className="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors placeholder:text-apple-secondary/40"
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            autoComplete="current-password"
-            className="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors placeholder:text-apple-secondary/40"
-          />
-          {error && (
-            <p className="text-xs text-red-400 text-center">Invalid username or password</p>
-          )}
-          <button
-            type="submit"
-            className="w-full bg-apple-text hover:bg-black text-white font-medium text-sm py-3 rounded-xl transition-all duration-200 active:scale-[0.97] cursor-pointer"
-          >
-            Sign In
-          </button>
-        </form>
+        {mode === 'choice' ? (
+          <>
+            <div className="text-center mb-7">
+              <p className="text-sm font-medium text-apple-secondary tracking-widest uppercase">
+                Login
+              </p>
+            </div>
+            <div className="space-y-3">
+              <button
+                onClick={handleGuest}
+                className="w-full bg-apple-text hover:bg-black text-white font-medium text-sm py-3 rounded-xl transition-all duration-200 active:scale-[0.97] cursor-pointer"
+              >
+                Continue as Guest
+              </button>
+              <button
+                onClick={() => setMode('email')}
+                className="w-full bg-white border border-apple-border/60 hover:border-apple-text text-apple-text font-medium text-sm py-3 rounded-xl transition-all duration-200 active:scale-[0.97] cursor-pointer"
+              >
+                Sign in with Email
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="text-center mb-7">
+              <p className="text-sm font-medium text-apple-secondary tracking-widest uppercase">
+                Sign In
+              </p>
+            </div>
+            <form onSubmit={handleEmailSubmit} className="space-y-3.5">
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                autoComplete="email"
+                className="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors placeholder:text-apple-secondary/40"
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                autoComplete="current-password"
+                className="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors placeholder:text-apple-secondary/40"
+              />
+              {error && (
+                <p className="text-xs text-red-400 text-center">Invalid email or password</p>
+              )}
+              <button
+                type="submit"
+                className="w-full bg-apple-text hover:bg-black text-white font-medium text-sm py-3 rounded-xl transition-all duration-200 active:scale-[0.97] cursor-pointer"
+              >
+                Sign In
+              </button>
+            </form>
+            <button
+              onClick={() => setMode('choice')}
+              className="mt-4 text-xs text-apple-secondary hover:text-apple-text transition-colors cursor-pointer mx-auto block"
+            >
+              ← Back to options
+            </button>
+          </>
+        )}
       </div>
     </div>
   )

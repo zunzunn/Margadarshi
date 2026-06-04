@@ -4,8 +4,12 @@ export function isLoggedIn(): boolean {
   return localStorage.getItem(AUTH_KEY) === 'true';
 }
 
-export function login(username: string, password: string): boolean {
-  if (username === 'admin' && password === 'admin') {
+export function guestLogin(): void {
+  localStorage.setItem(AUTH_KEY, 'true');
+}
+
+export function emailLogin(email: string, password: string): boolean {
+  if (email === 'demo@example.com' && password === 'demo') {
     localStorage.setItem(AUTH_KEY, 'true');
     return true;
   }
