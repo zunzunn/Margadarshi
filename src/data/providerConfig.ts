@@ -23,7 +23,7 @@ export const providerConfig: Record<Provider, ProviderConfigItem> = {
         { role: 'user', content: userMessage },
       ],
       temperature: 0.6,
-      max_tokens: 2500,
+      max_tokens: 1200,
     }),
     getHeaders: (apiKey) => ({
       'Content-Type': 'application/json',

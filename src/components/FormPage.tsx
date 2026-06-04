@@ -25,6 +25,8 @@ export default function FormPage({ t, onSubmit, onLogout, isProcessing }: FormPa
 
       <div className="apple-card rounded-2xl p-6 md:p-8 mb-6 reveal shadow-sm">
         <form id="profileForm" className="space-y-5 md:space-y-6" onSubmit={(e) => { e.preventDefault(); onSubmit(); }}>
+
+          {/* ── Academic Background ── */}
           <div className="space-y-1.5">
             <label htmlFor="classGrade" className="block text-sm font-medium text-apple-text">
               <span>{t.labelClass}</span>
@@ -44,6 +46,48 @@ export default function FormPage({ t, onSubmit, onLogout, isProcessing }: FormPa
             </select>
           </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+            <div className="space-y-1.5">
+              <label htmlFor="board" className="block text-sm font-medium text-apple-text">
+                <span>{t.labelBoard}</span>
+                {t.labelBoardKn && <span className="text-apple-secondary font-normal ml-1">{t.labelBoardKn}</span>}
+              </label>
+              <select
+                id="board"
+                required
+                defaultValue=""
+                className="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors"
+              >
+                {t.boardOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value} disabled={!opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              <p className="text-[11px] text-apple-secondary/70">{t.hintBoard}</p>
+            </div>
+            <div className="space-y-1.5">
+              <label htmlFor="medium" className="block text-sm font-medium text-apple-text">
+                <span>{t.labelMedium}</span>
+                {t.labelMediumKn && <span className="text-apple-secondary font-normal ml-1">{t.labelMediumKn}</span>}
+              </label>
+              <select
+                id="medium"
+                required
+                defaultValue=""
+                className="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors"
+              >
+                {t.mediumOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value} disabled={!opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              <p className="text-[11px] text-apple-secondary/70">{t.hintMedium}</p>
+            </div>
+          </div>
+
+          {/* ── Academic Performance ── */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
             <div className="space-y-1.5">
               <label htmlFor="marks" className="block text-sm font-medium text-apple-text">
@@ -72,6 +116,125 @@ export default function FormPage({ t, onSubmit, onLogout, isProcessing }: FormPa
               />
               <p className="text-[11px] text-apple-secondary/70">{t.hintSubjects}</p>
             </div>
+          </div>
+
+          {/* ── Preferences ── */}
+          <div className="space-y-1.5">
+            <label htmlFor="stream" className="block text-sm font-medium text-apple-text">
+              <span>{t.labelStream}</span>
+              {t.labelStreamKn && <span className="text-apple-secondary font-normal ml-1">{t.labelStreamKn}</span>}
+            </label>
+            <select
+              id="stream"
+              required
+              defaultValue=""
+              className="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors"
+            >
+              {t.streamOptions.map((opt) => (
+                <option key={opt.value} value={opt.value} disabled={!opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+            <p className="text-[11px] text-apple-secondary/70">{t.hintStream}</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+            <div className="space-y-1.5">
+              <label htmlFor="collegeType" className="block text-sm font-medium text-apple-text">
+                <span>{t.labelCollegeType}</span>
+                {t.labelCollegeTypeKn && <span className="text-apple-secondary font-normal ml-1">{t.labelCollegeTypeKn}</span>}
+              </label>
+              <select
+                id="collegeType"
+                required
+                defaultValue=""
+                className="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors"
+              >
+                {t.collegeTypeOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value} disabled={!opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              <p className="text-[11px] text-apple-secondary/70">{t.hintCollegeType}</p>
+            </div>
+            <div className="space-y-1.5">
+              <label htmlFor="stay" className="block text-sm font-medium text-apple-text">
+                <span>{t.labelStay}</span>
+                {t.labelStayKn && <span className="text-apple-secondary font-normal ml-1">{t.labelStayKn}</span>}
+              </label>
+              <select
+                id="stay"
+                required
+                defaultValue=""
+                className="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors"
+              >
+                {t.stayOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value} disabled={!opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              <p className="text-[11px] text-apple-secondary/70">{t.hintStay}</p>
+            </div>
+          </div>
+
+          {/* ── Financial Info ── */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+            <div className="space-y-1.5">
+              <label htmlFor="income" className="block text-sm font-medium text-apple-text">
+                <span>{t.labelIncome}</span>
+                {t.labelIncomeKn && <span className="text-apple-secondary font-normal ml-1">{t.labelIncomeKn}</span>}
+              </label>
+              <select
+                id="income"
+                required
+                defaultValue=""
+                className="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors"
+              >
+                {t.incomeOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value} disabled={!opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              <p className="text-[11px] text-apple-secondary/70">{t.hintIncome}</p>
+            </div>
+            <div className="space-y-1.5">
+              <label htmlFor="budget" className="block text-sm font-medium text-apple-text">
+                <span>{t.labelBudget}</span>
+                {t.labelBudgetKn && <span className="text-apple-secondary font-normal ml-1">{t.labelBudgetKn}</span>}
+              </label>
+              <select
+                id="budget"
+                required
+                defaultValue=""
+                className="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors"
+              >
+                {t.budgetOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value} disabled={!opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              <p className="text-[11px] text-apple-secondary/70">{t.hintBudget}</p>
+            </div>
+          </div>
+
+          {/* ── Goals ── */}
+          <div className="space-y-1.5">
+            <label htmlFor="prefCourse" className="block text-sm font-medium text-apple-text">
+              <span>{t.labelPrefCourse}</span>
+              {t.labelPrefCourseKn && <span className="text-apple-secondary font-normal ml-1">{t.labelPrefCourseKn}</span>}
+            </label>
+            <input
+              type="text"
+              id="prefCourse"
+              placeholder={t.hintPrefCourse}
+              className="w-full bg-white border border-apple-border/60 rounded-xl px-4 py-3 text-sm text-apple-text focus:outline-none focus:border-apple-blue transition-colors placeholder:text-apple-secondary/40"
+            />
+            <p className="text-[11px] text-apple-secondary/70">{t.hintPrefCourse}</p>
           </div>
 
           <div className="space-y-1.5">

@@ -1,6 +1,7 @@
 import { providerConfig } from '@/data/providerConfig'
 import { translations } from '@/translations'
 import type { Lang } from '@/translations'
+import { bangaloreColleges, collegeWebsites } from '@/data/bangaloreColleges'
 
 export function parseMarkdown(md: string, noContentText: string): string {
   if (!md) return `<p class='italic text-apple-secondary/60'>${noContentText}</p>`;
@@ -55,8 +56,16 @@ export function parseMarkdown(md: string, noContentText: string): string {
 export async function getAIRecommendations(
   apiKey: string,
   classGrade: string,
+  board: string,
+  medium: string,
   marks: string,
   strongSubjects: string,
+  stream: string,
+  collegeType: string,
+  stay: string,
+  income: string,
+  budget: string,
+  prefCourse: string,
   coreInterest: string,
   lang: string,
   provider: string
@@ -64,25 +73,38 @@ export async function getAIRecommendations(
   const t = translations[lang as Lang]
   const conf = providerConfig[provider as keyof typeof providerConfig]
 
-  const systemMessage = `You are an empathetic, deeply knowledgeable career counselor stationed in rural Karnataka, India.
-You understand the ground realities of rural school and college students, budget constraints, internet access issues, and state-specific educational frameworks.
-${t.aiLang}`;
+  const incomeLabel = t.incomeOptions.find(o => o.value === income)?.label || income
+  const budgetLabel = t.budgetOptions.find(o => o.value === budget)?.label || budget
 
-  const userMessage = `Student Profile:
-- Class/Grade: ${classGrade}
-- Academic Performance / Marks: ${marks}
-- Strongest Subjects: ${strongSubjects}
-- Actual Core Interest (in their own words): "${coreInterest}"
-Analyze this profile and provide a highly localized, actionable response formatted strictly into three distinct sections separated exactly by "|||". 
-Do NOT include any introduction, conversational filler, or greeting. Do NOT write the section titles (e.g. "Section 1: Academic Alignment") inside your content, as the UI already provides them. Just provide the direct markdown content for each.
-First part (Academic Alignment):
-Analyze their current class and marks to suggest realistic, immediate next steps in Karnataka's ecosystem (e.g., PUC streams, local GTTC, ITIs, polytechnics, degrees). Highlight relevant Karnataka state welfare, reservations, or scholarships (Vidyasiri, SSP) if applicable.
+  const collegeDbCompact = bangaloreColleges.map(c => {
+    const url = collegeWebsites[c.name] || ''
+    const courses = c.courses.map(co => `  - ${co.name}: ₹${Math.round(co.feesPerYear / 1000)}K/yr (${co.stream})`).join('\n')
+    return `${c.name} [${c.type}]${c.hostelAvailable ? ' H' : ''}${url ? ` ${url}` : ''}\n${courses}`
+  }).join('\n\n')
+
+  const systemMessage = `You are a career counselor for rural students seeking Bangalore colleges. Know KCET, COMEDK, NEET, Karnataka scholarships, quotas, and the local college landscape.
+${t.aiLang}
+Use the college database below to recommend specific colleges with course names and annual fees.`;
+
+  const userMessage = `STUDENT PROFILE:
+- Class: ${classGrade}
+- Board: ${board} | Medium: ${medium}
+- Marks: ${marks} | Strong subjects: ${strongSubjects}
+- Preferred stream: ${stream} | College type: ${collegeType} | Stay: ${stay}
+- Family income: ${incomeLabel} | Budget: ${budgetLabel}
+- Desired course: ${prefCourse}
+- Core interest: "${coreInterest}"
+
+BANGALORE COLLEGES DATABASE (fees are approximate annual):
+${collegeDbCompact}
+
+Respond with exactly 3 sections separated by "|||". No greetings or intros. No section titles in output.
+
+1 (College Matches): Recommend 3-5 specific Bangalore colleges from the database matching this student's profile. Mention course name, annual fee, why it fits, and the college website URL from the database. After each college, advise the student to research more at their website for the latest fee and admission details. If fees exceed budget, note relevant scholarships (Vidyasiri, SSP, KCET fee concession).
 |||
-Second part (Passion Bridge & Roadmap):
-If the student's marks are low but their interest demands high academics, or if they have an unconventional interest, provide an encouraging, realistic "alternative bridge". Give a step-by-step roadmap showing how to break into their field using practical skills, open-source learning, vocational certificates, or alternative entries, bypassing rigid gatekeeping. Be highly practical.
+2 (Financial Roadmap): Break down total annual cost (tuition + hostel/PG/living). List applicable Karnataka government scholarships by income bracket. Simple steps to apply.
 |||
-Third part (Competitive Horizons):
-Provide a dedicated list of competitive exams, talent hunt exams, and Olympiads tailored strictly to their current grade and interests to build early exposure. Include relevant state/national opportunities like NMMS, NTSE, SOF, Homi Bhabha, KCET, DCET, or regional skill competitions.`;
+3 (Admission Roadmap): Step-by-step timeline for Bangalore admission — key exams (KCET, COMEDK, NEET), typical deadlines (Mar-Jun), documents needed, KEA counseling process. Tailor to their class and stream.`;
 
   const payload = conf.makePayload(systemMessage, userMessage);
   const url = typeof conf.endpoint === 'function' ? conf.endpoint(apiKey) : conf.endpoint;

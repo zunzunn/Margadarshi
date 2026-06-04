@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import type { Lang, TranslationSet } from '@/translations'
 import type { Provider } from '@/data/providerConfig'
 import { getProviderConfig, saveApiKey, removeApiKey, getApiKey } from '@/stores/provider'
@@ -13,13 +13,8 @@ interface TopBarProps {
 
 export default function TopBar({ lang, t, provider, onLangChange, onProviderChange }: TopBarProps) {
   const [open, setOpen] = useState(false)
-  const [keyInput, setKeyInput] = useState('')
+  const [keyInput, setKeyInput] = useState(() => getApiKey(provider) ?? '')
   const [status, setStatus] = useState<{ msg: string; cls: string } | null>(null)
-
-  useEffect(() => {
-    const stored = getApiKey(provider)
-    if (stored) setKeyInput(stored)
-  }, [provider])
 
   function handleSave() {
     if (keyInput.trim()) {
@@ -30,6 +25,12 @@ export default function TopBar({ lang, t, provider, onLangChange, onProviderChan
       setStatus({ msg: t.keyRemoved, cls: 'text-red-400' })
     }
     setTimeout(() => setStatus(null), 1500)
+  }
+
+  function handleProviderSelect(nextProvider: Provider) {
+    onProviderChange(nextProvider)
+    setKeyInput(getApiKey(nextProvider) ?? '')
+    setStatus(null)
   }
 
   const conf = getProviderConfig(provider)
@@ -82,7 +83,7 @@ export default function TopBar({ lang, t, provider, onLangChange, onProviderChan
               {(['groq', 'gemini'] as Provider[]).map((p) => (
                 <button
                   key={p}
-                  onClick={() => onProviderChange(p)}
+                  onClick={() => handleProviderSelect(p)}
                   className={`px-4 py-1.5 text-xs font-medium rounded-[980px] transition-all duration-200 cursor-pointer ${
                     provider === p
                       ? 'bg-white text-apple-text shadow-sm'

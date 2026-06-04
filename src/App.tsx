@@ -1,10 +1,11 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback } from 'react'
 import { MeshGradient } from '@paper-design/shaders-react'
 import LoginPage from '@/components/LoginPage'
 import TopBar from '@/components/TopBar'
 import FormPage from '@/components/FormPage'
 import LoadingPage from '@/components/LoadingPage'
 import ResultsPage from '@/components/ResultsPage'
+import CommunityPage from '@/components/CommunityPage'
 import { isLoggedIn, logout as authLogout } from '@/stores/auth'
 import { getCurrentLang, setCurrentLang, getTranslations } from '@/stores/language'
 import { getCurrentProvider, setCurrentProvider, getApiKey } from '@/stores/provider'
@@ -15,31 +16,29 @@ import type { Provider } from '@/data/providerConfig'
 const BG_COLORS = ['#72b9bb', '#b5d9d9', '#ffd1bd', '#ffebe0', '#8cc5b8', '#dbf4a4']
 
 type Page = 'Form' | 'Loading' | 'Results'
+type AppView = 'Guidance' | 'Community'
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(isLoggedIn)
   const [lang, setLang] = useState<Lang>(getCurrentLang)
   const [provider, setProvider] = useState<Provider>(getCurrentProvider)
+  const [view, setView] = useState<AppView>('Guidance')
   const [page, setPage] = useState<Page>('Form')
-  const [t, setT] = useState<TranslationSet>(() => getTranslations(lang))
   const [isProcessing, setIsProcessing] = useState(false)
   const [sections, setSections] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
-
-  const formRef = useRef<{ getFormData: () => { classGrade: string; marks: string; strongSubjects: string; coreInterest: string } }>(null)
-
-  useEffect(() => {
-    setT(getTranslations(lang))
-  }, [lang])
+  const t: TranslationSet = getTranslations(lang)
 
   const handleLogin = useCallback(() => {
     setLoggedIn(true)
+    setView('Guidance')
     setPage('Form')
   }, [])
 
   const handleLogout = useCallback(() => {
     authLogout()
     setLoggedIn(false)
+    setView('Guidance')
   }, [])
 
   const handleLangChange = useCallback((l: Lang) => {
@@ -61,20 +60,36 @@ export default function App() {
     setError(null)
 
     const classSelect = document.getElementById('classGrade') as HTMLSelectElement
+    const boardSelect = document.getElementById('board') as HTMLSelectElement
+    const mediumSelect = document.getElementById('medium') as HTMLSelectElement
     const marksInput = document.getElementById('marks') as HTMLInputElement
     const subjectsInput = document.getElementById('strongSubjects') as HTMLInputElement
+    const streamSelect = document.getElementById('stream') as HTMLSelectElement
+    const collegeTypeSelect = document.getElementById('collegeType') as HTMLSelectElement
+    const staySelect = document.getElementById('stay') as HTMLSelectElement
+    const incomeSelect = document.getElementById('income') as HTMLSelectElement
+    const budgetSelect = document.getElementById('budget') as HTMLSelectElement
+    const prefCourseInput = document.getElementById('prefCourse') as HTMLInputElement
     const interestInput = document.getElementById('coreInterest') as HTMLTextAreaElement
 
     const classGrade = classSelect?.value
+    const board = boardSelect?.value
+    const medium = mediumSelect?.value
     const marks = marksInput?.value
     const strongSubjects = subjectsInput?.value || 'None specified'
+    const stream = streamSelect?.value
+    const collegeType = collegeTypeSelect?.value
+    const stay = staySelect?.value
+    const income = incomeSelect?.value
+    const budget = budgetSelect?.value
+    const prefCourse = prefCourseInput?.value || 'Not specified'
     const coreInterest = interestInput?.value
 
     setIsProcessing(true)
     setPage('Loading')
 
     try {
-      const result = await getAIRecommendations(apiKey, classGrade, marks, strongSubjects, coreInterest, lang, provider)
+      const result = await getAIRecommendations(apiKey, classGrade, board, medium, marks, strongSubjects, stream, collegeType, stay, income, budget, prefCourse, coreInterest, lang, provider)
       setSections([
         parseMarkdown(result[0], t.noContent),
         parseMarkdown(result[1], t.noContent),
@@ -94,6 +109,11 @@ export default function App() {
 
   const handleBackToForm = useCallback(() => {
     setPage('Form')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [])
+
+  const handleViewChange = useCallback((nextView: AppView) => {
+    setView(nextView)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
@@ -122,8 +142,39 @@ export default function App() {
         onLangChange={handleLangChange}
         onProviderChange={handleProviderChange}
       />
-      <main className="relative flex-grow w-full max-w-[680px] mx-auto px-5 sm:px-8 pt-36 pb-16 md:pt-40 md:pb-20" style={{ zIndex: 2 }}>
-        {error && (
+      <main
+        className={`relative flex-grow w-full mx-auto px-5 sm:px-8 pt-36 pb-16 md:pt-40 md:pb-20 ${
+          view === 'Community' ? 'max-w-[1180px]' : 'max-w-[680px]'
+        }`}
+        style={{ zIndex: 2 }}
+      >
+        <nav className="apple-card rounded-2xl p-1.5 mb-7 shadow-sm reveal flex gap-1.5">
+          {(['Guidance', 'Community'] as AppView[]).map((item) => (
+            <button
+              key={item}
+              type="button"
+              onClick={() => handleViewChange(item)}
+              className={`flex-1 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 ${
+                view === item
+                  ? 'bg-apple-text text-white shadow-sm'
+                  : 'text-apple-secondary hover:text-apple-text hover:bg-white/60'
+              }`}
+            >
+              {item === 'Guidance' ? (
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75v10.5M7.5 12h9M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1z" />
+                </svg>
+              ) : (
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h8M8 14h5M21 12c0 4.418-4.03 8-9 8a10.7 10.7 0 01-3.36-.53L3 20l1.55-3.1A7.4 7.4 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              )}
+              <span>{item}</span>
+            </button>
+          ))}
+        </nav>
+
+        {view === 'Guidance' && error && (
           <div className="bg-red-50/80 backdrop-blur-sm border border-red-200/60 p-5 mb-8 rounded-2xl reveal shadow-sm">
             <div className="flex items-start gap-3">
               <svg className="h-5 w-5 text-red-400 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,11 +188,12 @@ export default function App() {
           </div>
         )}
 
-        {page === 'Form' && (
+        {view === 'Guidance' && page === 'Form' && (
           <FormPage t={t} onSubmit={handleFormSubmit} onLogout={handleLogout} isProcessing={isProcessing} />
         )}
-        {page === 'Loading' && <LoadingPage t={t} />}
-        {page === 'Results' && <ResultsPage t={t} sections={sections} onBackToForm={handleBackToForm} />}
+        {view === 'Guidance' && page === 'Loading' && <LoadingPage t={t} />}
+        {view === 'Guidance' && page === 'Results' && <ResultsPage t={t} sections={sections} onBackToForm={handleBackToForm} />}
+        {view === 'Community' && <CommunityPage />}
       </main>
     </div>
   )
