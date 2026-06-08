@@ -10,6 +10,7 @@ import { isLoggedIn, logout as authLogout } from '@/stores/auth'
 import { getCurrentLang, setCurrentLang, getTranslations } from '@/stores/language'
 import { getCurrentProvider, setCurrentProvider, getApiKey } from '@/stores/provider'
 import { parseMarkdown, getAIRecommendations } from '@/data/markdownParser'
+import type { StudentProfile } from '@/data/markdownParser'
 import type { Lang, TranslationSet } from '@/translations'
 import type { Provider } from '@/data/providerConfig'
 
@@ -26,6 +27,8 @@ export default function App() {
   const [page, setPage] = useState<Page>('Form')
   const [isProcessing, setIsProcessing] = useState(false)
   const [sections, setSections] = useState<string[]>([])
+  const [rawSections, setRawSections] = useState<string[]>([])
+  const [formData, setFormData] = useState<StudentProfile | null>(null)
   const [error, setError] = useState<string | null>(null)
   const t: TranslationSet = getTranslations(lang)
 
@@ -85,11 +88,14 @@ export default function App() {
     const prefCourse = prefCourseInput?.value || 'Not specified'
     const coreInterest = interestInput?.value
 
+    setFormData({ classGrade, board, medium, marks, strongSubjects, stream, collegeType, stay, income, budget, prefCourse, coreInterest })
+
     setIsProcessing(true)
     setPage('Loading')
 
     try {
       const result = await getAIRecommendations(apiKey, classGrade, board, medium, marks, strongSubjects, stream, collegeType, stay, income, budget, prefCourse, coreInterest, lang, provider)
+      setRawSections(result)
       setSections([
         parseMarkdown(result[0], t.noContent),
         parseMarkdown(result[1], t.noContent),
@@ -192,7 +198,18 @@ export default function App() {
           <FormPage t={t} onSubmit={handleFormSubmit} onLogout={handleLogout} isProcessing={isProcessing} />
         )}
         {view === 'Guidance' && page === 'Loading' && <LoadingPage t={t} />}
-        {view === 'Guidance' && page === 'Results' && <ResultsPage t={t} sections={sections} onBackToForm={handleBackToForm} />}
+        {view === 'Guidance' && page === 'Results' && (
+          <ResultsPage
+            t={t}
+            sections={sections}
+            onBackToForm={handleBackToForm}
+            apiKey={getApiKey(provider)}
+            provider={provider}
+            lang={lang}
+            formData={formData}
+            rawSections={rawSections}
+          />
+        )}
         {view === 'Community' && <CommunityPage />}
       </main>
     </div>

@@ -1,9 +1,16 @@
 import type { TranslationSet } from '@/translations'
+import type { StudentProfile } from '@/data/markdownParser'
+import ChatBot from './ChatBot'
 
 interface ResultsPageProps {
   t: TranslationSet
   sections: string[]
   onBackToForm: () => void
+  apiKey: string | null
+  provider: string
+  lang: string
+  formData: StudentProfile | null
+  rawSections: string[]
 }
 
 function ResultCard({
@@ -32,7 +39,7 @@ function ResultCard({
   )
 }
 
-export default function ResultsPage({ t, sections, onBackToForm }: ResultsPageProps) {
+export default function ResultsPage({ t, sections, onBackToForm, apiKey, provider, lang, formData, rawSections }: ResultsPageProps) {
   return (
     <div className="space-y-6 pb-6">
       <ResultCard
@@ -63,6 +70,15 @@ export default function ResultsPage({ t, sections, onBackToForm }: ResultsPagePr
       >
         {t.backBtn}
       </button>
+
+      <ChatBot
+        t={t}
+        apiKey={apiKey}
+        provider={provider}
+        lang={lang}
+        formData={formData}
+        rawSections={rawSections}
+      />
     </div>
   )
 }

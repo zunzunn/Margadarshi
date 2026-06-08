@@ -3,6 +3,21 @@ import { translations } from '@/translations'
 import type { Lang } from '@/translations'
 import { bangaloreColleges, collegeWebsites } from '@/data/bangaloreColleges'
 
+export interface StudentProfile {
+  classGrade: string
+  board: string
+  medium: string
+  marks: string
+  strongSubjects: string
+  stream: string
+  collegeType: string
+  stay: string
+  income: string
+  budget: string
+  prefCourse: string
+  coreInterest: string
+}
+
 export function parseMarkdown(md: string, noContentText: string): string {
   if (!md) return `<p class='italic text-apple-secondary/60'>${noContentText}</p>`;
   let text = md.replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -130,4 +145,63 @@ Respond with exactly 3 sections separated by "|||". No greetings or intros. No s
   }
 
   return sections;
+}
+
+export async function chatWithAI(
+  apiKey: string,
+  provider: string,
+  profile: StudentProfile,
+  sections: string[],
+  question: string,
+  lang: string,
+): Promise<string> {
+  const t = translations[lang as Lang]
+  const conf = providerConfig[provider as keyof typeof providerConfig]
+
+  const profileStr = [
+    `- Class: ${profile.classGrade}`,
+    `- Board: ${profile.board}`,
+    `- Medium: ${profile.medium}`,
+    `- Marks: ${profile.marks}`,
+    `- Strong subjects: ${profile.strongSubjects}`,
+    `- Stream: ${profile.stream}`,
+    `- College type: ${profile.collegeType}`,
+    `- Stay: ${profile.stay}`,
+    `- Income: ${profile.income}`,
+    `- Budget: ${profile.budget}`,
+    `- Desired course: ${profile.prefCourse}`,
+    `- Interest: "${profile.coreInterest}"`,
+  ].join('\n')
+
+  const sectionsStr = sections.map((s, i) => `SECTION ${i + 1}:\n${s}`).join('\n\n')
+
+  const systemMessage =
+    'You are a career counselor for rural Karnataka students seeking Bangalore colleges. The student previously received personalized recommendations. Answer their follow-up question conversationally based on their profile and the specific recommendations already given. Be encouraging, practical, and reference specific colleges, courses, scholarships, or steps already mentioned. ' +
+    t.aiLang
+
+  const userMessage =
+    'STUDENT PROFILE:\n' +
+    profileStr +
+    '\n\nPREVIOUS RECOMMENDATIONS:\n' +
+    sectionsStr +
+    "\n\nSTUDENT QUESTION:\n" +
+    question +
+    "\n\nAnswer the student's question conversationally based on their profile and the recommendations above. Reference specific details from the recommendations."
+
+  const payload = conf.makePayload(systemMessage, userMessage)
+  const url = typeof conf.endpoint === 'function' ? conf.endpoint(apiKey) : conf.endpoint
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: conf.getHeaders(apiKey),
+    body: JSON.stringify(payload),
+  })
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}))
+    throw new Error(`API Error ${response.status}: ${(errData as Record<string, { message?: string }>).error?.message || response.statusText}`)
+  }
+
+  const data: Record<string, unknown> = await response.json()
+  return conf.extractContent(data)
 }
