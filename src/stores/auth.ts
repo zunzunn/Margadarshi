@@ -9,7 +9,7 @@ export function guestLogin(): void {
 }
 
 export function emailLogin(email: string, password: string): boolean {
-  if (email === 'demo@example.com' && password === 'demo') {
+  if (email === 'example@gmail.com' && password === '123456') {
     localStorage.setItem(AUTH_KEY, 'true');
     return true;
   }
